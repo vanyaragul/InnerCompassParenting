@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-        ? ['YOUR_NETLIFY_URL_HERE'] // Replace with your actual Netlify URL
+        ? ['https://innercompassparenting.netlify.app']
         : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5000']
 }));
 app.use(express.json());
