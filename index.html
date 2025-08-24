@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inner Compass Parenting</title>
+    <style>
+        :root {
+            --primary-color: #6597b8;
+            --secondary-color: #749494;
+            --text-color: #556570;
+            --light-bg: #f8f9fa;
+            --soft-grey: #f1f2f4;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: var(--soft-grey);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+ 	    position: sticky;
+    	    top: 0;
+    	    z-index: 100;	    
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+	.logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 45px;
+            width: auto;
+        }
+       
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .login-link {
+            background: var(--primary-color);
+            color: white !important;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .login-link:hover {
+            background: var(--primary-color);
+            color: white !important;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: 
+                url('./hero-background.jpeg'),
+                radial-gradient(ellipse 400px 300px at 85% 80%, rgba(107, 141, 181, 0.15) 0%, rgba(107, 141, 181, 0.08) 40%, transparent 70%),
+                radial-gradient(ellipse 350px 250px at 75% 65%, rgba(26, 26, 26, 0.12) 0%, rgba(26, 26, 26, 0.04) 50%, transparent 70%),
+                radial-gradient(ellipse 300px 200px at 90% 70%, rgba(107, 141, 181, 0.12) 0%, rgba(107, 141, 181, 0.05) 40%, transparent 60%);
+            background-size: cover, auto, auto, auto;
+            background-position: center center, 85% 80%, 75% 65%, 90% 70%;
+            background-repeat: no-repeat;
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -28px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: white;
+            clip-path: polygon(
+                0% 75%, 
+                4% 45%, 
+                10% 80%, 
+                16% 55%, 
+                23% 85%, 
+                29% 50%, 
+                36% 75%, 
+                43% 55%, 
+                50% 80%, 
+                57% 60%, 
+                64% 85%, 
+                71% 55%, 
+                78% 80%, 
+                85% 60%, 
+                92% 85%, 
+                98% 65%, 
+                100% 75%, 
+                100% 100%, 
+                0% 100%
+            );
+            z-index: 1;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: white;
+            clip-path: polygon(
+                0% 25%, 
+                6% 45%, 
+                13% 20%, 
+                20% 40%, 
+                27% 15%, 
+                34% 35%, 
+                41% 25%, 
+                48% 40%, 
+                55% 20%, 
+                62% 35%, 
+                69% 15%, 
+                76% 40%, 
+                83% 25%, 
+                90% 45%, 
+                96% 20%, 
+                100% 25%, 
+                100% 0%, 
+                0% 0%
+            );
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #666;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .cta-button:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: var(--text-color);
+            border: 2px solid var(--text-color);
+        }
+
+        .cta-secondary:hover {
+            background: var(--text-color);
+            color: white;
+        }
+
+
+        /* Main Sections */
+        .section {
+            padding: 4rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section:nth-child(even) {
+            background: #f1f2f4;
+        }
+
+        /* Soft Torn Paper Effects - Top Edges */
+        .section.torn-top::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: inherit;
+            clip-path: polygon(
+                0% 80%, 
+                3% 85%, 
+                8% 75%, 
+                12% 88%, 
+                18% 82%, 
+                23% 90%, 
+                28% 78%, 
+                34% 85%, 
+                39% 92%, 
+                45% 83%, 
+                50% 88%, 
+                55% 81%, 
+                61% 89%, 
+                66% 84%, 
+                72% 91%, 
+                77% 79%, 
+                83% 86%, 
+                88% 93%, 
+                94% 82%, 
+                100% 87%, 
+                100% 100%, 
+                0% 100%
+            );
+            z-index: 1;
+        }
+
+        /* Soft Torn Paper Effects - Bottom Edges */
+        .section.torn-bottom::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: inherit;
+            clip-path: polygon(
+                0% 0%, 
+                100% 0%, 
+                100% 15%, 
+                94% 22%, 
+                88% 12%, 
+                83% 19%, 
+                77% 25%, 
+                72% 14%, 
+                66% 21%, 
+                61% 16%, 
+                55% 23%, 
+                50% 18%, 
+                45% 24%, 
+                39% 13%, 
+                34% 20%, 
+                28% 26%, 
+                23% 15%, 
+                18% 22%, 
+                12% 17%, 
+                8% 28%, 
+                3% 19%, 
+                0% 25%
+            );
+            z-index: 1;
+        }
+
+        /* Extra Gentle Curves for Hero Section */
+        .hero.torn-bottom::after {
+            clip-path: polygon(
+                0% 0%, 
+                100% 0%, 
+                100% 12%, 
+                96% 18%, 
+                91% 14%, 
+                86% 20%, 
+                81% 16%, 
+                75% 22%, 
+                70% 15%, 
+                64% 19%, 
+                58% 24%, 
+                52% 17%, 
+                46% 21%, 
+                40% 18%, 
+                34% 25%, 
+                28% 19%, 
+                22% 16%, 
+                16% 23%, 
+                10% 20%, 
+                5% 17%, 
+                0% 21%
+            );
+        }
+
+        /* Softer curves for contact section */
+        .contact-section.torn-top::before {
+            clip-path: polygon(
+                0% 85%, 
+                4% 88%, 
+                9% 82%, 
+                14% 89%, 
+                20% 84%, 
+                26% 91%, 
+                32% 86%, 
+                38% 93%, 
+                44% 87%, 
+                50% 90%, 
+                56% 85%, 
+                62% 92%, 
+                68% 88%, 
+                74% 83%, 
+                80% 89%, 
+                86% 91%, 
+                92% 86%, 
+                97% 90%, 
+                100% 88%, 
+                100% 100%, 
+                0% 100%
+            );
+        }
+
+        /* About Section - Gray background */
+        #about::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: white;
+            clip-path: polygon(
+                0% 70%, 
+                7% 50%, 
+                14% 75%, 
+                21% 55%, 
+                28% 80%, 
+                35% 45%, 
+                42% 70%, 
+                49% 60%, 
+                56% 75%, 
+                63% 50%, 
+                70% 80%, 
+                77% 55%, 
+                84% 75%, 
+                91% 60%, 
+                98% 70%, 
+                100% 70%, 
+                100% 100%, 
+                0% 100%
+            );
+            z-index: 1;
+        }
+
+        #about::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: white;
+            clip-path: polygon(
+                0% 30%, 
+                8% 45%, 
+                15% 25%, 
+                22% 40%, 
+                29% 20%, 
+                36% 35%, 
+                43% 30%, 
+                50% 45%, 
+                57% 25%, 
+                64% 40%, 
+                71% 20%, 
+                78% 35%, 
+                85% 30%, 
+                92% 45%, 
+                99% 25%, 
+                100% 30%, 
+                100% 0%, 
+                0% 0%
+            );
+            z-index: 1;
+        }
+
+        /* Understanding Section - White background */
+        #understanding::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: #f1f2f4;
+            clip-path: polygon(
+                0% 70%, 
+                7% 50%, 
+                14% 75%, 
+                21% 55%, 
+                28% 80%, 
+                35% 45%, 
+                42% 70%, 
+                49% 60%, 
+                56% 75%, 
+                63% 50%, 
+                70% 80%, 
+                77% 55%, 
+                84% 75%, 
+                91% 60%, 
+                98% 70%, 
+                100% 70%, 
+                100% 100%, 
+                0% 100%
+            );
+            z-index: 1;
+        }
+
+        #understanding::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: white;
+            clip-path: polygon(
+                0% 30%, 
+                8% 45%, 
+                15% 25%, 
+                22% 40%, 
+                29% 20%, 
+                36% 35%, 
+                43% 30%, 
+                50% 45%, 
+                57% 25%, 
+                64% 40%, 
+                71% 20%, 
+                78% 35%, 
+                85% 30%, 
+                92% 45%, 
+                99% 25%, 
+                100% 30%, 
+                100% 0%, 
+                0% 0%
+            );
+            z-index: 1;
+        }
+
+        /* Approach Section - Gray background */
+        #approach::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: white;
+            clip-path: polygon(
+                0% 65%, 
+                6% 40%, 
+                13% 70%, 
+                20% 50%, 
+                27% 75%, 
+                34% 45%, 
+                41% 65%, 
+                48% 55%, 
+                55% 70%, 
+                62% 45%, 
+                69% 75%, 
+                76% 50%, 
+                83% 65%, 
+                90% 55%, 
+                97% 70%, 
+                100% 65%, 
+                100% 100%, 
+                0% 100%
+            );
+            z-index: 1;
+        }
+
+        #approach::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: #f1f2f4;
+            clip-path: polygon(
+                0% 35%, 
+                9% 50%, 
+                16% 30%, 
+                23% 45%, 
+                30% 25%, 
+                37% 40%, 
+                44% 35%, 
+                51% 50%, 
+                58% 30%, 
+                65% 45%, 
+                72% 25%, 
+                79% 40%, 
+                86% 35%, 
+                93% 50%, 
+                100% 30%, 
+                100% 35%, 
+                100% 0%, 
+                0% 0%
+            );
+            z-index: 1;
+        }
+
+        /* Sessions Section - White background */
+        #sessions::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: white;
+            clip-path: polygon(
+                0% 70%, 
+                7% 50%, 
+                14% 75%, 
+                21% 55%, 
+                28% 80%, 
+                35% 45%, 
+                42% 70%, 
+                49% 60%, 
+                56% 75%, 
+                63% 50%, 
+                70% 80%, 
+                77% 55%, 
+                84% 75%, 
+                91% 60%, 
+                98% 70%, 
+                100% 70%, 
+                100% 100%, 
+                0% 100%
+            );
+            z-index: 1;
+        }
+
+        #sessions::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: white;
+            clip-path: polygon(
+                0% 25%, 
+                7% 40%, 
+                14% 20%, 
+                21% 35%, 
+                28% 15%, 
+                35% 30%, 
+                42% 25%, 
+                49% 40%, 
+                56% 20%, 
+                63% 35%, 
+                70% 15%, 
+                77% 30%, 
+                84% 25%, 
+                91% 40%, 
+                98% 20%, 
+                100% 25%, 
+                100% 0%, 
+                0% 0%
+            );
+            z-index: 1;
+        }
+
+        .section h2 {
+            font-size: 1.7rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .section h2.left-align {
+            text-align: left;
+        }
+
+        .intro-text {
+            font-size: 1.05rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 2.5rem auto;
+            color: #666;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        /* About Section */
+        .about-content {
+            position: relative;
+        }
+
+        .about-image {
+            width: 200px;
+            height: 240px;
+            background-image: url('./your-photo.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+            float: left;
+            margin: 0 2rem 1rem 0;
+        }
+
+        /* Understanding Section */
+        .understanding-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .understanding-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            text-align: center;
+            border: 1px solid #f0f0f0;
+        }
+
+        .understanding-card h3 {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .understanding-card p {
+            color: #666;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        /* Steps Section */
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .step-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: #f1f2f4;
+            clip-path: polygon(
+                0% 60%, 
+                8% 80%, 
+                16% 40%, 
+                24% 70%, 
+                32% 50%, 
+                40% 75%, 
+                48% 45%, 
+                56% 65%, 
+                64% 55%, 
+                72% 80%, 
+                80% 40%, 
+                88% 70%, 
+                96% 50%, 
+                100% 60%, 
+                100% 100%, 
+                0% 100%
+            );
+            z-index: 1;
+        }
+
+        .step-card::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: #f1f2f4;
+            clip-path: polygon(
+                0% 40%, 
+                8% 20%, 
+                16% 60%, 
+                24% 30%, 
+                32% 50%, 
+                40% 25%, 
+                48% 55%, 
+                56% 35%, 
+                64% 45%, 
+                72% 20%, 
+                80% 60%, 
+                88% 30%, 
+                96% 50%, 
+                100% 40%, 
+                100% 0%, 
+                0% 0%
+            );
+            z-index: 1;
+        }
+
+        .step-number {
+            background: var(--primary-color);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .step-card h3 {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-size: 1.0rem;
+            font-weight: 700;
+        }
+
+        .step-card p {
+            color: #666;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        /* Sessions Section */
+        .sessions-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            border: 1px solid #f0f0f0;
+        }
+
+        .session-item {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .session-item:last-child {
+            border-bottom: none;
+        }
+
+        .session-item h4 {
+            color: var(--text-color);
+            margin-bottom: 0.75rem;
+            font-size: 1.0rem;
+            font-weight: 700;
+        }
+
+        .session-item p {
+            color: #666;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background: #f1f2f4;
+            color: var(--text-color);
+            text-align: center;
+            padding: 1rem 0;
+            position: relative;
+            overflow: hidden;
+            font-size: 0.8rem;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: #f1f2f4;
+            clip-path: polygon(
+                0% 65%, 
+                6% 45%, 
+                12% 70%, 
+                18% 50%, 
+                24% 75%, 
+                30% 40%, 
+                36% 65%, 
+                42% 55%, 
+                48% 70%, 
+                54% 45%, 
+                60% 75%, 
+                66% 50%, 
+                72% 65%, 
+                78% 55%, 
+                84% 70%, 
+                90% 45%, 
+                96% 65%, 
+                100% 60%, 
+                100% 100%, 
+                0% 100%
+            );
+            z-index: 1;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.7rem;
+            }
+            
+            .hero p {
+                font-size: 1.05rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .schedule-btn {
+                display: none;
+            }
+            
+            .about-content {
+                display: block;
+            }
+            
+            .about-image {
+                float: none;
+                width: 200px;
+                height: 240px;
+                margin: 0 auto 1.5rem auto;
+                display: block;
+            }
+            
+            .sessions-content {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="header-content">
+                <div class="logo">
+                    <a href="index.html"><img src="./logo.svg" alt="Inner Compass Parenting"></a>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html#about">Our Story</a></li>
+                    <li><a href="index.html#sessions">What to Expect</a></li>
+                    <li><a href="booking_choice.html">Sessions & Packages</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                    <li><a href="client_portal.html" class="login-link">Log In</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero torn-bottom">
+        <div class="container">
+            <h1>Autism & Parenting: You Are Your Child's Medicine</h1>
+            <p>A guide to transforming daily struggles into lasting peace</p>
+            <p style="font-size: 1.1rem; color: var(--text-color); font-weight: 600; margin-bottom: 2rem;">Slow down, Trust yourself and Trust your child</p>
+	    <div style="margin-bottom: 2rem;">
+    		<a href="framework.html" class="cta-button cta-secondary">Discover <strong>Inner Compass Parenting</strong></a>
+    		<br><br>
+    		<a href="mailto:hello@innercompassparenting.com" class="cta-button">Book a Session</a>
+	    </div>
+            <img src="./hero-arrow.png" alt="Hand-drawn arrow" style="height: 60px; width: auto;">
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section torn-top torn-bottom">
+        <div class="container">
+            <h2 class="left-align">Our Story: Me, My Son & Autism</h2>
+            <div class="about-content">
+                <div class="about-image"></div>
+                <p style="font-size: 1.0rem; line-height: 1.7; margin-bottom: 1.5rem; color: var(--text-color);">
+                    As an autistic mother raising an autistic toddler who doesn't speak yet, I've lived through the relentless cycle of food refusals, meltdowns, sleepless nights, and constant health struggles. Despite countless professional appointments, the answers were either limited or didn't feel right - and yet, I could clearly see my son's intelligence shining through in ways that didn't match conventional milestones.
+                </p>
+                <p style="font-size: 1.0rem; line-height: 1.7; margin-bottom: 1.5rem; color: var(--text-color);">
+                    Even if he didn't respond to speech or make eye contact, he communicated clearly through body language. He was curious and deeply engaged with his surroundings - always eager to explore. At just six months old, he began requesting specific songs. He rejected foods that his body couldn't process - long before I understood he had salicylate sensitivities. Where others saw limitations, I saw his unconventional intelligence.
+                </p>
+                <p style="font-size: 1.0rem; line-height: 1.7; margin-bottom: 1.5rem; color: var(--text-color);">
+                    But the real transformation began during my own healing journey. As I worked through my own overwhelm and started trusting my instincts, something surprising happened - his health began improving too, without doing anything different for him. He became calmer, more joyful, more curious. His sleep deepened, mealtimes grew peaceful, his skin cleared. That's when I understood: his sensitive system had been reflecting my inner state all along.
+                </p>
+                <p style="font-size: 1.0rem; line-height: 1.7; margin-bottom: 1.5rem; color: var(--text-color);">
+                    I'm here to walk alongside families who recognize there has to be another way. Not another overwhelming protocol to add to your already full days. Not strategies to manage what feels unmanageable. And not temporary fixes that leave you exhausted. This isn't about getting your child to adapt but understanding why they're struggling to adapt in the first place.
+                </p>
+                <p style="font-size: 1.0rem; line-height: 1.7; margin-bottom: 1.5rem; color: var(--text-color);">
+                    If my story speaks to you and you're ready to explore a different path forward, I invite you to dive deeper below.
+                </p>
+		<div style="text-align: center; margin-top: 2rem;">
+    		    <a href="framework.html" class="cta-button">Discover Inner Compass Parenting</a>
+		</div>
+            </div>
+        </div>
+    </section>
+ 
+    <!-- Sessions Section -->
+    <section id="sessions" class="section torn-top torn-bottom">
+        <div class="container">
+            <h2>What to Expect in Our Time Together</h2>
+            <div class="sessions-content">
+                <p style="text-align: center; margin-bottom: 2rem; font-style: italic; color: var(--text-color);">
+                    My intention is to create meaningful, transformative experiences for the families I'm honored to support.
+                </p>
+                
+                <div class="session-item">
+                    <h4>Working with Your Reality</h4>
+                    <p>I invite you to engage in activities that are usually challenging with your child. I observe how your interaction unfolds, notice what might bring more ease in the interaction and let our work build naturally from there.</p>
+                </div>
+                
+                <div class="session-item">
+                    <h4>Focus on Your Inner Compass</h4>
+                    <p>Our sessions won’t be about learning coping strategies, but about creating peaceful space where both you and your child can relax, be yourselves, and follow your own inner wisdom. Because your child's nervous system regulation flows directly from your own, I invite you to notice your thoughts and emotions during challenging moments, sometimes asking gentle but probing questions that help you connect more deeply with yourself.</p>
+                </div>
+
+                <div class="session-item">
+                    <h4>Child‑led Connection</h4>
+                    <p>I gently introduce myself to your child but allow them to lead the interaction. Depending on your child, this might mean active engagement or simply quiet presence beside them. With children who can understand language, my focus is helping them find peace with their natural impulses and build self‑confidence in a world that often doesn’t understand them. If your child is very young and not yet responsive to language, I focus on helping you stay present, creating space for your child to be themselves, and allowing their natural behaviors to unfold without needing any particular response from them.</p>
+                </div>
+
+                <div class="session-item">
+                    <h4>Embracing Silence</h4>
+                    <p>While I encourage all of your questions about your child, the process, and your role, I also allow natural pauses in our conversations. I’ll invite you to let these silences simply be, without rushing to fill them. For some, these silences might feel uncomfortable at first because they create space for feelings we’re not used to sitting with. Know that this discomfort means your body is actively processing the emotions and, as they gently release, your relationship with yourself grows — which naturally deepens the bond with your child.</p>
+                </div>
+
+                <p style="text-align: center; margin-top: 2rem; color: var(--text-color);">
+                    If this approach feels like it honors your family’s truth, I warmly invite you to book a session and begin this journey together.
+                </p>
+                
+                <div style="text-align: center;">
+                    <a href="mailto:hello@innercompassparenting.com" class="cta-button">Book a Session</a>
+                </div>
+
+            </div><!-- end sessions-content -->
+        </div><!-- end container -->
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section torn-top">
+        <div class="container">
+            <h2>Begin This Journey Together</h2>
+            <div style="text-align: center; max-width: 600px; margin: 0 auto;">
+                <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+                    If this approach feels like it honors your family’s truth, I warmly invite you to book a session and begin this journey together.
+                </p>
+                <a href="mailto:hello@innercompassparenting.com" class="cta-button">Contact Me</a>
+                <br><br>
+                <p>hello@innercompassparenting.com</p>
+            </div>
+        </div>
+    </section>
+
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 0.5rem;">
+            <a href="privacy-policy.html" style="color: var(--text-color); text-decoration: none; margin: 0 1rem;">Privacy Policy</a>
+            <a href="service-agreement.html" style="color: var(--text-color); text-decoration: none; margin: 0 1rem;">Service Agreement</a>
+            <a href="terms-conditions.html" style="color: var(--text-color); text-decoration: none; margin: 0 1rem;">T&Cs</a>
+            <a href="cancellation-refund.html" style="color: var(--text-color); text-decoration: none; margin: 0 1rem;">Cancellation/Refund Policy</a>
+        </div>
+        
+        <p style="text-align: center; margin-top: 0.25rem;">&copy; 2025 Inner Compass Parenting. All rights reserved.</p>
+    </div>
+</footer>
+</body>
+</html>

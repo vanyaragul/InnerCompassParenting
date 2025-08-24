@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Your Custom Package - Inner Compass Parenting</title>
+    
+    <!-- External Scripts -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css' type='text/css' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js'></script>
+    
+    <style>
+        /* CSS Custom Properties for Consistent Theming */
+        :root {
+            --primary-color: #6597b8;
+            --secondary-color: #749494;
+            --text-color: #556570;
+            --bg-color: #fafafa;
+            --light-bg: #f8f9fa;
+            --soft-grey: #f1f2f4;
+            --border-color: #e9ecef;
+            --success-color: #749494;
+            --warning-color: #f0ad4e;
+        }
+        
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--soft-grey);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 45px;
+            width: auto;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .login-link {
+            background: var(--primary-color);
+            color: white !important;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+        }
+
+        .login-link:hover {
+            background: #5687a8;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(101, 151, 184, 0.05) 0%, rgba(116, 148, 148, 0.05) 100%);
+            padding: 3rem 0;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Location Section */
+        .location-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+        }
+
+        .location-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .location-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .location-title h2 {
+            color: var(--text-color);
+            font-size: 1.4rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .location-title p {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Geocoder Container */
+        #geocoder-container {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Override Mapbox Geocoder Styles */
+        .mapboxgl-ctrl-geocoder {
+            width: 100%;
+            max-width: 100%;
+            box-shadow: none !important;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .mapboxgl-ctrl-geocoder--input {
+            padding: 0.75rem !important;
+            font-size: 1rem !important;
+            color: var(--text-color) !important;
+        }
+
+        .mapboxgl-ctrl-geocoder--input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .mapboxgl-ctrl-geocoder--icon-search {
+            display: none !important;
+        }
+
+        /* Map Container */
+        #map {
+            width: 100%;
+            height: 400px;
+            border-radius: 12px;
+            margin-top: 1rem;
+            display: none;
+            background: var(--light-bg);
+        }
+
+        /* Zone Indicator */
+        .zone-indicator {
+            background: linear-gradient(135deg, rgba(101, 151, 184, 0.08) 0%, rgba(116, 148, 148, 0.08) 100%);
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .zone-indicator.active {
+            display: block;
+        }
+
+        .zone-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .zone-info {
+            flex: 1;
+        }
+
+        .zone-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        /* Outside Area Message */
+        .outside-area {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .outside-area.active {
+            display: block;
+        }
+
+        .virtual-suggestion {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .virtual-suggestion:hover {
+            background: #5687a8;
+        }
+
+        /* Package Builder Grid */
+        .package-builder {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        /* Session Selection */
+        .session-selection {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+        }
+
+        .session-selection h2 {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* No Location Message */
+        .no-location-message {
+            background: linear-gradient(135deg, rgba(101, 151, 184, 0.05) 0%, rgba(116, 148, 148, 0.05) 100%);
+            border: 1px solid rgba(101, 151, 184, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            color: #666;
+        }
+
+        .no-location-message svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        /* Children Selector */
+        .children-selector {
+            background: linear-gradient(135deg, rgba(101, 151, 184, 0.05) 0%, rgba(116, 148, 148, 0.05) 100%);
+            border: 1px solid rgba(101, 151, 184, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .children-selector.active {
+            display: block;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .qty-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .qty-btn:hover {
+            background: #5687a8;
+        }
+
+        .qty-input {
+            width: 60px;
+            text-align: center;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+
+        /* Session Category */
+        .session-category {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .session-category.active {
+            display: block;
+        }
+
+        .session-category:last-child {
+            border-bottom: none;
+        }
+
+        .session-category h3 {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .session-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--light-bg);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            transition: transform 0.2s ease;
+        }
+
+        .session-item:hover {
+            transform: translateX(5px);
+        }
+
+        .session-info {
+            flex: 1;
+        }
+
+        .session-title {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .session-description {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .session-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .price-badge {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 90px;
+            height: fit-content;
+        }
+
+        .order-summary h2 {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .empty-cart {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 2rem 0;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .summary-item small {
+            color: #888;
+            display: block;
+            font-size: 0.85rem;
+        }
+
+        .total-section {
+            border-top: 2px solid var(--primary-color);
+            padding-top: 1rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .total-section.active {
+            display: block;
+        }
+
+        .total-final {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+
+        .payment-btn {
+            width: 100%;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .payment-btn.primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .payment-btn.primary:hover:not(:disabled) {
+            background: #5687a8;
+        }
+
+        .payment-btn.secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .payment-btn.secondary:hover:not(:disabled) {
+            background: #638080;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .package-builder {
+                grid-template-columns: 1fr;
+            }
+            
+            .order-summary {
+                position: static;
+                margin-top: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .zone-details {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="header-content">
+                <div class="logo">
+                    <a href="index.html">
+                        <img src="./logo.svg" alt="Inner Compass Parenting">
+                    </a>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html#about">Our Story</a></li>
+                    <li><a href="index.html#sessions">What to Expect</a></li>
+                    <li><a href="booking_choice.html">Sessions & Packages</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                    <li><a href="client_portal.html" class="login-link">Log In</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Design Your Custom Package</h1>
+            <p>Build your personalized support plan with location-based pricing</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Location Input Section -->
+        <div class="location-section">
+            <div class="location-header">
+                <div class="location-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                </div>
+                <div class="location-title">
+                    <h2>Step 1: Your Location</h2>
+                    <p>We provide in-person services within 60 minutes of Chilliwack, BC</p>
+                </div>
+            </div>
+            
+            <!-- Geocoder will be inserted here -->
+            <div id="geocoder-container"></div>
+            
+            <!-- Map Container -->
+            <div id="map"></div>
+            
+            <!-- Zone Indicator -->
+            <div class="zone-indicator" id="zone-indicator">
+                <h3 style="color: var(--primary-color); margin-bottom: 1rem;">✓ Service Zone Confirmed</h3>
+                <div class="zone-details">
+                    <div class="zone-info">
+                        <div><strong>Your Address:</strong> <span id="client-address">-</span></div>
+                        <div><strong>Distance:</strong> <span id="distance">-</span> km</div>
+                    </div>
+                    <div class="zone-badge" id="zone-badge">Zone -</div>
+                </div>
+            </div>
+            
+            <!-- Outside Service Area Message -->
+            <div class="outside-area" id="outside-area">
+                <h3 style="color: #856404; margin-bottom: 0.5rem;">Outside Service Area</h3>
+                <p style="color: #856404;">This location is beyond our in-person service area. We'd love to support you through virtual sessions!</p>
+                <a href="#virtual-sessions" class="virtual-suggestion">View Virtual Session Options</a>
+            </div>
+        </div>
+
+        <!-- Package Builder Grid -->
+        <div class="package-builder">
+            <!-- Session Selection -->
+            <div class="session-selection">
+                <h2>Step 2: Choose Your Sessions</h2>
+                
+                <!-- Default message when no location entered -->
+                <div class="no-location-message" id="no-location-message">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    <h3>Start by Adding Your Location</h3>
+                    <p>Enter your address above to see personalized pricing</p>
+                </div>
+                
+                <!-- Session options container -->
+                <div id="session-options" style="display: none;">
+                    <!-- Children Selector -->
+                    <div class="children-selector" id="children-selector">
+                        <h3 style="color: var(--primary-color); margin-bottom: 1rem;">How many autistic children will participate?</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <label style="color: var(--text-color); font-weight: 600;">Number of children:</label>
+                            <div class="quantity-control">
+                                <button class="qty-btn" onclick="changeChildren(-1)">−</button>
+                                <input type="number" class="qty-input" id="num-children" value="1" min="1" max="5" readonly>
+                                <button class="qty-btn" onclick="changeChildren(1)">+</button>
+                            </div>
+                        </div>
+                        <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem; font-style: italic;">
+                            Additional children: +$30 CAD/hour each
+                        </p>
+                    </div>
+                    
+                    <!-- Virtual Sessions -->
+                    <div class="session-category" id="virtual-sessions">
+                        <h3>Virtual Sessions</h3>
+                        <div class="session-item">
+                            <div class="session-info">
+                                <div class="session-title">Virtual - 30 Minutes</div>
+                                <div class="session-description">Perfect for quick check-ins and focused questions</div>
+                            </div>
+                            <div class="session-controls">
+                                <div class="price-badge">$50/session</div>
+                                <div class="quantity-control">
+                                    <button class="qty-btn" onclick="changeQuantity('virtual-30', -1)">−</button>
+                                    <input type="number" class="qty-input" id="virtual-30" value="0" min="0" max="20" readonly>
+                                    <button class="qty-btn" onclick="changeQuantity('virtual-30', 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-info">
+                                <div class="session-title">Virtual - 1 Hour</div>
+                                <div class="session-description">Comprehensive support and deep exploration</div>
+                            </div>
+                            <div class="session-controls">
+                                <div class="price-badge">$100/session</div>
+                                <div class="quantity-control">
+                                    <button class="qty-btn" onclick="changeQuantity('virtual-60', -1)">−</button>
+                                    <input type="number" class="qty-input" id="virtual-60" value="0" min="0" max="20" readonly>
+                                    <button class="qty-btn" onclick="changeQuantity('virtual-60', 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- In-Person Sessions (dynamically populated) -->
+                    <div class="session-category" id="inperson-sessions">
+                        <!-- Will be populated based on zone -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2>Your Package Summary</h2>
+                <div id="cart-items">
+                    <div class="empty-cart">
+                        Select sessions to build your custom package
+                    </div>
+                </div>
+                <div class="total-section" id="total-section">
+                    <div class="total-final">
+                        <span>Total:</span>
+                        <span id="total-price">$0</span>
+                    </div>
+                    <button class="payment-btn primary" onclick="proceedToPayment()" id="pay-now-btn">
+                        Pay Now
+                    </button>
+                    <button class="payment-btn secondary" onclick="proceedToInstallments()" id="installment-btn">
+                        Pay in Installments
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Configuration
+        const MAPBOX_TOKEN = 'YOUR_MAPBOX_ACCESS_TOKEN_HERE';
+        const STRIPE_KEY = 'YOUR_STRIPE_PUBLISHABLE_KEY_HERE';
+        const MAKE_WEBHOOK = 'YOUR_MAKE_WEBHOOK_URL_HERE';
+        const HOME_COORDS = [-121.9476, 49.1579]; // Chilliwack coordinates
+        
+        // Initialize Stripe
+        const stripe = Stripe(STRIPE_KEY);
+        
+        // Global state
+        let map = null;
+        let geocoder = null;
+        let currentZone = null;
+        let clientAddress = '';
+        let distance = 0;
+        let cart = {};
+        
+        // Zone pricing structure
+        const zonePricing = {
+            1: {
+                name: "Zone 1 (0-10 km)",
+                sessions: {
+                    'inperson-60': { name: 'In-Person - 1 Hour', price: 100, description: 'Hands-on support in your home' },
+                    'inperson-120': { name: 'In-Person - 2 Hours', price: 200, description: 'Extended deep-dive sessions' }
+                }
+            },
+            2: {
+                name: "Zone 2 (10-20 km)",
+                sessions: {
+                    'inperson-60': { name: 'In-Person - 1 Hour', price: 155, description: 'Includes travel to your location' },
+                    'inperson-120': { name: 'In-Person - 2 Hours', price: 285, description: 'Extended sessions with travel' }
+                }
+            },
+            3: {
+                name: "Zone 3 (20-35 km)",
+                sessions: {
+                    'inperson-60': { name: 'In-Person - 1 Hour', price: 170, description: 'Extended travel zone support' },
+                    'inperson-120': { name: 'In-Person - 2 Hours', price: 340, description: 'Extended sessions in your area' }
+                }
+            },
+            4: {
+                name: "Zone 4 (35-50 km)",
+                sessions: {
+                    'inperson-60': { name: 'In-Person - 1 Hour', price: 185, description: 'Premium travel zone support' },
+                    'inperson-120': { name: 'In-Person - 2 Hours', price: 370, description: 'Premium extended sessions' }
+                }
+            }
+        };
+        
+        const virtualSessions = {
+            'virtual-30': { name: 'Virtual - 30 Minutes', price: 50, duration: 0.5 },
+            'virtual-60': { name: 'Virtual - 1 Hour', price: 100, duration: 1 }
+        };
+        
+        // Initialize map and geocoder
+        function initializeMap() {
+            mapboxgl.accessToken = MAPBOX_TOKEN;
+            
+            // Create map
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v12',
+                center: HOME_COORDS,
+                zoom: 9
+            });
+            
+            // Add home marker
+            new mapboxgl.Marker({ color: '#6597b8' })
+                .setLngLat(HOME_COORDS)
+                .setPopup(new mapboxgl.Popup().setHTML('<h3>Inner Compass Parenting</h3><p>Chilliwack, BC</p>'))
+                .addTo(map);
+            
+            // Initialize geocoder
+            geocoder = new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                countries: 'ca',
+                proximity: { longitude: HOME_COORDS[0], latitude: HOME_COORDS[1] },
+                placeholder: 'Enter your address...',
+                bbox: [-124.0, 48.0, -120.0, 50.5],
+                types: 'address,poi',
+                mapboxgl: mapboxgl
+            });
+            
+            // Add geocoder to container (not to map)
+            document.getElementById('geocoder-container').appendChild(geocoder.onAdd());
+            
+            // Handle geocoder result
+            geocoder.on('result', function(e) {
+                handleAddressSelection(e.result);
+            });
+            
+            // Handle map load
+            map.on('load', function() {
+                map.resize();
+            });
+        }
+        
+        // Handle address selection
+        async function handleAddressSelection(result) {
+            clientAddress = result.place_name;
+            const coords = result.center;
+            
+            // Calculate distance
+            const from = turf.point(HOME_COORDS);
+            const to = turf.point(coords);
+            distance = turf.distance(from, to, { units: 'kilometers' });
+            
+            // Determine zone
+            currentZone = calculateZone(coords[0], coords[1]);
+            
+            // Update UI
+            updateLocationDisplay(coords);
+            
+            // Show map
+            document.getElementById('map').style.display = 'block';
+            setTimeout(() => map.resize(), 100);
+            
+            // Add route to map
+            displayRoute(coords);
+        }
+        
+        // Calculate zone based on distance
+        function calculateZone(lng, lat) {
+            const isVancouverDirection = lng < HOME_COORDS[0] && lat > 49.0;
+            
+            // Adjust thresholds based on direction
+            const thresholds = isVancouverDirection ? 
+                { 1: 9, 2: 18, 3: 32, 4: 47 } :
+                { 1: 11, 2: 22, 3: 38, 4: 53 };
+            
+            if (distance <= thresholds[1]) return 1;
+            if (distance <= thresholds[2]) return 2;
+            if (distance <= thresholds[3]) return 3;
+            if (distance <= thresholds[4]) return 4;
+            return 'outside';
+        }
+        
+        // Update location display
+        function updateLocationDisplay(coords) {
+            // Hide initial message
+            document.getElementById('no-location-message').style.display = 'none';
+            document.getElementById('session-options').style.display = 'block';
+            
+            if (currentZone === 'outside') {
+                // Show outside area message
+                document.getElementById('zone-indicator').classList.remove('active');
+                document.getElementById('outside-area').classList.add('active');
+                
+                // Show only virtual sessions
+                document.getElementById('children-selector').classList.add('active');
+                document.getElementById('virtual-sessions').classList.add('active');
+                document.getElementById('inperson-sessions').classList.remove('active');
+            } else {
+                // Show zone indicator
+                document.getElementById('zone-indicator').classList.add('active');
+                document.getElementById('outside-area').classList.remove('active');
+                
+                // Update zone details
+                document.getElementById('client-address').textContent = clientAddress;
+                document.getElementById('distance').textContent = Math.round(distance);
+                document.getElementById('zone-badge').textContent = `Zone ${currentZone}`;
+                
+                // Show all session types
+                document.getElementById('children-selector').classList.add('active');
+                document.getElementById('virtual-sessions').classList.add('active');
+                populateInPersonSessions();
+            }
+        }
+        
+        // Display route on map
+        async function displayRoute(coords) {
+            // Add destination marker
+            new mapboxgl.Marker({ color: '#749494' })
+                .setLngLat(coords)
+                .setPopup(new mapboxgl.Popup().setHTML(`<p>${clientAddress}</p>`))
+                .addTo(map);
+            
+            // Fit bounds
+            const bounds = new mapboxgl.LngLatBounds();
+            bounds.extend(HOME_COORDS);
+            bounds.extend(coords);
+            map.fitBounds(bounds, { padding: 50 });
+            
+            // Get and display route
+            try {
+                const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${HOME_COORDS[0]},${HOME_COORDS[1]};${coords[0]},${coords[1]}?geometries=geojson&access_token=${MAPBOX_TOKEN}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.routes && data.routes[0]) {
+                    // Remove existing route if any
+                    if (map.getSource('route')) {
+                        map.removeLayer('route');
+                        map.removeSource('route');
+                    }
+                    
+                    // Add new route
+                    map.addSource('route', {
+                        type: 'geojson',
+                        data: {
+                            type: 'Feature',
+                            properties: {},
+                            geometry: data.routes[0].geometry
+                        }
+                    });
+                    
+                    map.addLayer({
+                        id: 'route',
+                        type: 'line',
+                        source: 'route',
+                        layout: {
+                            'line-join': 'round',
+                            'line-cap': 'round'
+                        },
+                        paint: {
+                            'line-color': '#6597b8',
+                            'line-width': 4,
+                            'line-opacity': 0.7
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching route:', error);
+            }
+        }
+        
+        // Populate in-person sessions based on zone
+        function populateInPersonSessions() {
+            const container = document.getElementById('inperson-sessions');
+            
+            if (currentZone && currentZone !== 'outside') {
+                const zone = zonePricing[currentZone];
+                container.innerHTML = `
+                    <h3>In-Person Sessions - ${zone.name}</h3>
+                    ${Object.entries(zone.sessions).map(([id, session]) => `
+                        <div class="session-item">
+                            <div class="session-info">
+                                <div class="session-title">${session.name}</div>
+                                <div class="session-description">${session.description}</div>
+                            </div>
+                            <div class="session-controls">
+                                <div class="price-badge">$${session.price}/session</div>
+                                <div class="quantity-control">
+                                    <button class="qty-btn" onclick="changeQuantity('${id}', -1)">−</button>
+                                    <input type="number" class="qty-input" id="${id}" value="0" min="0" max="20" readonly>
+                                    <button class="qty-btn" onclick="changeQuantity('${id}', 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                `;
+                container.classList.add('active');
+            } else {
+                container.classList.remove('active');
+            }
+        }
+        
+        // Change number of children
+        function changeChildren(delta) {
+            const input = document.getElementById('num-children');
+            const current = parseInt(input.value);
+            const newValue = Math.max(1, Math.min(5, current + delta));
+            input.value = newValue;
+            updateCart();
+        }
+        
+        // Change session quantity
+        function changeQuantity(sessionId, delta) {
+            const input = document.getElementById(sessionId);
+            if (!input) return;
+            
+            const current = parseInt(input.value);
+            const newValue = Math.max(0, Math.min(20, current + delta));
+            input.value = newValue;
+            updateCart();
+        }
+        
+        // Update cart
+        function updateCart() {
+            const numChildren = parseInt(document.getElementById('num-children').value);
+            cart = {};
+            let total = 0;
+            
+            // Process virtual sessions
+            Object.keys(virtualSessions).forEach(id => {
+                const input = document.getElementById(id);
+                if (input && input.value > 0) {
+                    const qty = parseInt(input.value);
+                    const session = virtualSessions[id];
+                    const childrenCost = (numChildren - 1) * 30 * session.duration;
+                    const price = session.price + childrenCost;
+                    
+                    cart[id] = {
+                        name: session.name,
+                        quantity: qty,
+                        price: price,
+                        total: price * qty,
+                        children: numChildren
+                    };
+                    total += price * qty;
+                }
+            });
+            
+            // Process in-person sessions
+            if (currentZone && currentZone !== 'outside') {
+                Object.entries(zonePricing[currentZone].sessions).forEach(([id, session]) => {
+                    const input = document.getElementById(id);
+                    if (input && input.value > 0) {
+                        const qty = parseInt(input.value);
+                        const duration = id.includes('120') ? 2 : 1;
+                        const childrenCost = (numChildren - 1) * 30 * duration;
+                        const price = session.price + childrenCost;
+                        
+                        cart[id] = {
+                            name: session.name,
+                            quantity: qty,
+                            price: price,
+                            total: price * qty,
+                            children: numChildren
+                        };
+                        total += price * qty;
+                    }
+                });
+            }
+            
+            // Update display
+            updateCartDisplay(total);
+        }
+        
+        // Update cart display
+        function updateCartDisplay(total) {
+            const cartContainer = document.getElementById('cart-items');
+            const totalSection = document.getElementById('total-section');
+            
+            if (Object.keys(cart).length === 0) {
+                cartContainer.innerHTML = '<div class="empty-cart">Select sessions to build your custom package</div>';
+                totalSection.classList.remove('active');
+            } else {
+                cartContainer.innerHTML = Object.values(cart).map(item => `
+                    <div class="summary-item">
+                        <div>
+                            <div>${item.quantity}× ${item.name}</div>
+                            <small>${item.children === 1 ? '1 child' : `${item.children} children`}</small>
+                        </div>
+                        <div style="font-weight: 600;">$${item.total}</div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('total-price').textContent = `$${total}`;
+                totalSection.classList.add('active');
+            }
+        }
+        
+        // Payment handlers
+        async function proceedToPayment() {
+            const total = Object.values(cart).reduce((sum, item) => sum + item.total, 0);
+            if (total === 0) {
+                alert('Please select at least one session');
+                return;
+            }
+            
+            // Send to webhook
+            await sendToWebhook('one-time', total);
+            
+            // Create Stripe checkout
+            await createCheckoutSession('payment', total);
+        }
+        
+        async function proceedToInstallments() {
+            const total = Object.values(cart).reduce((sum, item) => sum + item.total, 0);
+            if (total === 0) {
+                alert('Please select at least one session');
+                return;
+            }
+            
+            // Calculate installments
+            const weeklyAmount = Math.max(50, Math.ceil(total / 10));
+            const weeks = Math.ceil(total / weeklyAmount);
+            
+            // Send to webhook
+            await sendToWebhook('installment', total);
+            
+            // Create Stripe checkout
+            await createCheckoutSession('subscription', total, weeklyAmount, weeks);
+        }
+        
+        // Send data to webhook
+        async function sendToWebhook(paymentType, total) {
+            try {
+                await fetch(MAKE_WEBHOOK, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        client_address: clientAddress,
+                        zone: currentZone || 'Virtual Only',
+                        distance_km: Math.round(distance),
+                        sessions: cart,
+                        total_amount: total,
+                        payment_type: paymentType,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Webhook error:', error);
+            }
+        }
+        
+        // Create Stripe checkout session
+        async function createCheckoutSession(mode, total, weeklyAmount, weeks) {
+            try {
+                console.log('Creating Stripe checkout with:', {
+                    mode,
+                    total,
+                    weeklyAmount,
+                    weeks
+                });
+
+                // Check if backend is accessible
+                // Backend URL configuration
+                const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                    ? 'http://localhost:3000'
+                    : 'YOUR_RAILWAY_URL_HERE'; // Replace with your actual Railway URL
+                
+                // Test backend connection first
+                try {
+                    const healthCheck = await fetch(`${backendUrl}/health`);
+                    if (!healthCheck.ok) {
+                        throw new Error('Backend health check failed');
+                    }
+                } catch (healthError) {
+                    console.error('Backend connection failed:', healthError);
+                    alert(`❌ Backend server not running!\n\nPlease:\n1. Open terminal in your project folder\n2. Run "npm install"\n3. Run "npm start"\n4. Wait for "Stripe server running" message\n5. Try again`);
+                    return;
+                }
+
+                const totalSessions = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
+                const cartArray = Object.values(cart);
+                
+                const lineItems = [];
+                
+                if (mode === 'payment') {
+                    // One-time payment
+                    lineItems.push({
+                        price_data: {
+                            currency: 'cad',
+                            product_data: {
+                                name: `${totalSessions}-Session Autism Parenting Package`,
+                                description: `Complete session package for autism parenting support - ${clientAddress || 'Location TBD'}`
+                            },
+                            unit_amount: Math.round(total * 100), // Stripe uses cents
+                        },
+                        quantity: 1,
+                    });
+                } else if (mode === 'subscription') {
+                    // Subscription/installment payment
+                    lineItems.push({
+                        price_data: {
+                            currency: 'cad',
+                            product_data: {
+                                name: `Weekly Payment Plan - ${totalSessions} Sessions`,
+                                description: `$${weeklyAmount}/week × ${weeks} weeks = $${total} total`
+                            },
+                            unit_amount: Math.round(weeklyAmount * 100),
+                            recurring: {
+                                interval: 'week',
+                                interval_count: 1
+                            },
+                        },
+                        quantity: 1,
+                    });
+                }
+
+                // Create checkout session via local backend
+                const response = await fetch(`${backendUrl}/create-checkout-session`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        mode: mode,
+                        line_items: lineItems,
+                        success_url: `${window.location.origin}/confirmation.html?session_id={CHECKOUT_SESSION_ID}`,
+                        cancel_url: window.location.href,
+                        metadata: {
+                            payment_type: mode === 'payment' ? 'onetime' : 'installment',
+                            total_sessions: totalSessions,
+                            final_total: total,
+                            weekly_amount: weeklyAmount || 0,
+                            installment_weeks: weeks || 0,
+                            client_address: clientAddress || 'Not provided',
+                            zone: currentZone ? `Zone ${currentZone}` : 'Virtual Only',
+                            cart: JSON.stringify(cartArray)
+                        }
+                    }),
+                });
+
+                const session = await response.json();
+
+                if (session.error) {
+                    throw new Error(session.error);
+                }
+
+                // Redirect to Stripe Checkout
+                const result = await stripe.redirectToCheckout({
+                    sessionId: session.id
+                });
+
+                if (result.error) {
+                    throw new Error(result.error.message);
+                }
+
+            } catch (error) {
+                console.error('Stripe checkout error:', error);
+                alert(`Payment failed: ${error.message}. Please try again or contact support.`);
+            }
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMap();
+        });
+    </script>
+</body>
+</html>

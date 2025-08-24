@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Session - Inner Compass Parenting</title>
+    <style>
+        :root {
+            --primary-color: #6597b8;
+            --secondary-color: #749494;
+            --text-color: #556570;
+            --light-bg: #f8f9fa;
+            --soft-grey: #f1f2f4;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--soft-grey);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: var(--soft-grey);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .login-link {
+            background: var(--primary-color);
+            color: white !important;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--soft-grey);
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 3rem 0;
+        }
+
+        /* Choice Cards */
+        .choice-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .choice-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(101, 151, 184, 0.15);
+        }
+
+        .choice-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .choice-card:hover::before {
+            opacity: 1;
+        }
+
+        .choice-badge {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .choice-title {
+            font-size: 1.5rem;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .choice-subtitle {
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .choice-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .choice-features li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-color);
+        }
+
+        .choice-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .choice-button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--text-color);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: var(--text-color);
+        }
+
+        .savings-tag {
+            background: var(--light-bg);
+            color: var(--text-color);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+
+        .info-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            color: var(--primary-color);
+        }
+
+        .info-title {
+            color: var(--text-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-text {
+            color: var(--text-color);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Pricing Preview */
+        .pricing-preview {
+            background: var(--light-bg);
+            border: 1px solid var(--primary-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .pricing-title {
+            text-align: center;
+            color: var(--text-color);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .pricing-table {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .pricing-column {
+            padding: 1rem;
+        }
+
+        .pricing-column h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .price-range {
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .price-note {
+            color: var(--text-color);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+
+        /* FAQ Section */
+        .faq-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+
+        .faq-title {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--secondary-color);
+            padding: 1.5rem 0;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            color: var(--text-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .faq-answer {
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .choice-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-table {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="header-content">
+                <div class="logo">
+                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+                        <path d="M15 5C8 5 3 10 3 15s5 10 12 10 12-5 12-10S22 5 15 5z" stroke="var(--primary-color)" stroke-width="2"/>
+                        <path d="M15 10c-3 0-5 2-5 5s2 5 5 5 5-2 5-5-2-5-5-5z" fill="var(--primary-color)"/>
+                    </svg>
+                    <span>Inner Compass Parenting</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html#about">Our Story</a></li>
+                    <li><a href="index.html#sessions">What to Expect</a></li>
+                    <li><a href="booking_choice.html">Sessions & Packages</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                    <li><a href="client_portal.html" class="login-link">Log In</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Choose Your Booking Option</h1>
+            <p>Flexible payment options to match your comfort level and needs</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Choice Cards -->
+            <div class="choice-section">
+                <!-- Single Session Card -->
+                <div class="choice-card" onclick="window.location.href='booking_single_session.html'">
+                    <span class="choice-badge">Most Popular for New Clients</span>
+                    <h2 class="choice-title">Single Session</h2>
+                    <p class="choice-subtitle">Book now, pay after your session</p>
+                    <ul class="choice-features">
+                        <li>Perfect for first-time clients</li>
+                        <li>No upfront payment required</li>
+                        <li>Card saved securely, charged post-session</li>
+                        <li>Standard rates apply</li>
+                        <li>Cancel anytime up to 24 hours before</li>
+                    </ul>
+                    <button class="choice-button btn-primary">Book Single Session</button>
+                </div>
+
+                <!-- Package Deal Card -->
+                <div class="choice-card" onclick="window.location.href='booking_package.html'">
+                    <span class="choice-badge" style="background: var(--secondary-color);">Best Value</span>
+                    <h2 class="choice-title">Package Deal</h2>
+                    <p class="choice-subtitle">Pre-purchase sessions for discounts</p>
+                    <ul class="choice-features">
+                        <li>3-5 sessions: <span class="savings-tag">Save 10%</span></li>
+                        <li>6-10 sessions: <span class="savings-tag">Save 15%</span></li>
+                        <li>11+ sessions: <span class="savings-tag">Save 20%</span></li>
+                        <li>Flexible payment plans available</li>
+                        <li>Mix and match session types</li>
+                    </ul>
+                    <button class="choice-button btn-secondary">Build Package</button>
+                </div>
+            </div>
+
+            <!-- Info Grid -->
+            <div class="info-grid">
+                <div class="info-card">
+                    <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2v20M2 12h20"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <h3 class="info-title">Flexible Scheduling</h3>
+                    <p class="info-text">Book sessions that work with your family's routine. Morning, afternoon, or evening slots available.</p>
+                </div>
+                <div class="info-card">
+                    <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                    </svg>
+                    <h3 class="info-title">Minutes Bank</h3>
+                    <p class="info-text">Sessions that end early? Unused minutes automatically carry forward to your next session.</p>
+                </div>
+                <div class="info-card">
+                    <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    <h3 class="info-title">In-Person or Virtual</h3>
+                    <p class="info-text">Choose between home visits within 60 minutes of Chilliwack or convenient virtual sessions.</p>
+                </div>
+            </div>
+
+            <!-- Pricing Preview -->
+            <div class="pricing-preview">
+                <h3 class="pricing-title">Session Pricing by Location</h3>
+                <div class="pricing-table">
+                    <div class="pricing-column">
+                        <h4>Virtual</h4>
+                        <div class="price-range">$50-100</div>
+                        <div class="price-note">No travel fees</div>
+                    </div>
+                    <div class="pricing-column">
+                        <h4>Zone 1</h4>
+                        <div class="price-range">$100-200</div>
+                        <div class="price-note">0-15 min drive</div>
+                    </div>
+                    <div class="pricing-column">
+                        <h4>Zone 2</h4>
+                        <div class="price-range">$155-285</div>
+                        <div class="price-note">15-30 min drive</div>
+                    </div>
+                    <div class="pricing-column">
+                        <h4>Zone 3-4</h4>
+                        <div class="price-range">$170-370</div>
+                        <div class="price-note">30-60 min drive</div>
+                    </div>
+                </div>
+                <p style="text-align: center; color: var(--text-color); font-size: 0.85rem; margin-top: 1rem;">
+                    Additional children: +$30/hour each • Prices shown are for single sessions • Package discounts available
+                </p>
+            </div>
+
+
+            <!-- FAQ Section -->
+            <div class="faq-section">
+                <h3 class="faq-title">Common Questions</h3>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Can I switch from single sessions to a package later?</div>
+                    <div class="faq-answer">Absolutely! Many families start with single sessions to experience our approach, then upgrade to packages for the savings. You can switch anytime.</div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">What's your cancellation policy?</div>
+                    <div class="faq-answer">Sessions must be rescheduled or cancelled at least 24 hours in advance. For emergencies or illness, please text or email immediately. No refunds for no-shows without notice.</div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">How do payment plans work for packages?</div>
+                    <div class="faq-answer">Packages can be paid in full or through weekly installments. For example, a $850 package can be paid as $85/week for 10 weeks. Installments are automatically charged to your card.</div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">What if I'm outside your service area?</div>
+                    <div class="faq-answer">We offer virtual sessions to families anywhere! If you're beyond our 60-minute drive radius, virtual sessions provide the same quality support without travel limitations.</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

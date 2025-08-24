@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Inner Compass Parenting</title>
+    <style>
+        :root {
+            --primary-color: #6597b8;
+            --secondary-color: #749494;
+            --text-color: #556570;
+            --light-bg: #f8f9fa;
+            --soft-grey: #f1f2f4;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #f1f2f4 0%, var(--border-color) 100%);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 45px;
+            width: auto;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .login-link {
+            background: var(--primary-color);
+            color: white !important;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .login-link:hover {
+            background: var(--primary-color);
+            color: white !important;
+        }
+
+        .back-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-link:hover {
+            background-color: var(--light-bg);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: sticky;
+            top: 70px;
+            background: white;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 99;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--border-color);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color) 0%, #8fa7c7 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--light-bg) 0%, var(--border-color) 100%);
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 3rem 0;
+        }
+
+        /* Framework Cards */
+        .framework-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+
+        .section-card:hover {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #6597B8 0%, #6597B8 100%);
+            color: white;
+            padding: 2rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+       
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .expand-icon {
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+            z-index: 2;
+        }
+
+        .section-card.expanded .expand-icon {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .section-card.expanded .card-content {
+            max-height: 5000px;
+        }
+
+        .card-inner {
+            padding: 2rem;
+        }
+
+        /* Content Styling */
+        .content-section {
+            margin-bottom: 2rem;
+        }
+
+        .content-section h3 {
+            color: var(--text-color);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-color);
+            display: inline-block;
+        }
+
+        .content-section p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+
+        .content-section ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Insight Boxes */
+        .insight-box {
+            background: linear-gradient(135deg, var(--light-bg) 0%, var(--border-color) 100%);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-box::before {
+            content: "💡";
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .insight-box h4 {
+            color: var(--text-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-box p {
+            color: var(--text-color);
+            font-style: italic;
+        }
+
+        /* Steps Grid */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .step-card {
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .step-number {
+            background: var(--primary-color);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .step-card h4 {
+            color: var(--text-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Emergency Framework */
+        .emergency-step {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .emergency-step:hover {
+            background: var(--light-bg);
+        }
+
+        .emergency-step h4 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        /* Quote Styling */
+        .quote {
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .card-header {
+                padding: 1.5rem;
+            }
+
+            .card-header h2 {
+                font-size: 1.3rem;
+            }
+
+            .card-inner {
+                padding: 1.5rem;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .expand-icon {
+                right: 1.5rem;
+            }
+
+            .progress-container {
+                top: 60px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .card-header {
+                padding: 1rem;
+            }
+
+            .card-inner {
+                padding: 1rem;
+            }
+
+            .insight-box {
+                padding: 1rem;
+            }
+
+            .hero {
+                padding: 2rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html"><img src="./logo.svg" alt="Inner Compass Parenting"></a>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html#about">Our Story</a></li>
+                    <li><a href="index.html#sessions">What to Expect</a></li>
+                    <li><a href="booking_choice.html">Sessions & Packages</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                    <li><a href="client_portal.html" class="login-link">Log In</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>The Inner Compass Parenting</h1>
+            <p>Understanding autism through the lens of nervous system safety and authentic connection</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="framework-section">
+
+                <!-- Section 1: The Science of Nervous System Safety -->
+                <div class="section-card" data-section="1">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <h2>The Science of Nervous System Safety</h2>
+                        <p class="card-subtitle">Understanding what's really happening in your child's body</p>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-inner">
+                            <div class="content-section">
+                                <p>Autism isn't about the body failing to work properly. It's what happens when a uniquely wired and extraordinarily sensitive nervous system enters a state of chronic dysregulation.</p>
+                                
+                                <p>What I discovered with myself and my son is now being supported by emerging research. Studies show that autism's most common challenges, including social and communication difficulties, sensory overload, emotional dysregulation, sleep disruption, digestive issues, and developmental challenges, trace back to this nervous system dysregulation. Meanwhile, child development research reveals how deeply young children absorb their primary caregiver's emotional state. Together, these findings help explain the transformation our family experienced.</p>
+                            </div>
+
+                            <div class="insight-box">
+                                <h4>Key Insight</h4>
+                                <p>When our body senses threat, it can activate in two ways: dramatic emergency response or subtle, more insidious constant low-grade vigilance that never fully settles.</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>How Chronic Activation Works</h3>
+                                <p>When the body operates in persistent survival mode, it has minimal capacity to handle even routine stimuli that would normally be manageable in a relaxed state. This creates a cascading breakdown:</p>
+                                
+                                <ul>
+                                    <li>Everyday experiences become overwhelming</li>
+                                    <li>Sleep disruption compounds exhaustion on an already strained system</li>
+                                    <li>Essential repair processes during sleep become impaired</li>
+                                    <li>Weakened digestion struggles with certain foods, creating sensitivities</li>
+                                    <li>Communication, learning, and social interactions deteriorate</li>
+                                    <li>In severe cases, basic motor functions become compromised</li>
+                                </ul>
+
+                                <p>In young children, this survival prioritization means developmental milestones are delayed or abandoned entirely as the body sacrifices growth for immediate protection.</p>
+                            </div>
+
+                            <div class="insight-box">
+                                <h4>The Real Truth</h4>
+                                <p>This chronic nervous system dysregulation is the body working exactly as it was designed to. The source isn't the body but the chronic stress the body keeps detecting without ever receiving the safety signal to finally relax.</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>The Connection Factor</h3>
+                                <p>For highly sensitive children, the perception of safety isn't just shaped by their environment but by their profound attunement to their primary caregiver's emotional state. Their nervous systems are so finely tuned that they naturally sync with the person they're most bonded to - this is how deeply these children connect with their caregivers, by essentially mirroring their internal state as if it were their own.</p>
+                                
+                                <p>This isn't because anyone is doing anything wrong, but because this is how attachment works for children with extraordinary sensitivity.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: The Universal Authenticity Gap -->
+                <div class="section-card" data-section="2">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <h2>The Universal Authenticity Gap</h2>
+                        <p class="card-subtitle">How we all learn to disconnect from our true selves</p>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-inner">
+                            <div class="content-section">
+                                <p>From our earliest moments, we're all shaped by an invisible current - the unspoken messages about which parts of ourselves are welcomed and which aren't. Our society, in an effort to function smoothly, celebrates certain qualities while discouraging others.</p>
+                                
+                                <p>Each time we prioritize external expectations over our inner draw or passion, we widen what could be called an authenticity gap - the space between who we really are and who we've learned we need to be to belong.</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>The Hidden Ranking System</h3>
+                                <p>Society doesn't just reward certain behaviors - it quietly ranks people based on how well and how quickly they adapt to these unspoken rules. Children who quickly learn to respond and communicate in familiar ways are celebrated as 'easy' or 'advanced.' Those who need more time or respond to the world in unfamiliar ways often find themselves labeled as 'challenging' or 'behind.'</p>
+                            </div>
+
+                            <div class="insight-box">
+                                <h4>The Family Connection</h4>
+                                <p>This shaping flows directly into our families. Parents, carrying their own experiences of this system, guide their children in ways that reflect what they believe will lead to acceptance and success.</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>How It Develops</h3>
+                                <p>This starts before we can even speak. A baby senses when a parent relaxes at a smile but tenses at prolonged crying. A toddler feels whether their storms are weathered together with patience versus being rushed to calm down.</p>
+                                
+                                <p>These small adjustments, repeated countless times, create patterns. Over time, these patterns form a persistent gap between who we authentically are and who we've learned we need to be.</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>The Autistic Difference</h3>
+                                <p>All children absorb their primary caregiver's emotional landscape, but neurotypical children have internal filters that allow them to carry this inherited authenticity gap as background experience. Autistic children, however, with their extraordinary sensitivity and lack of these buffering mechanisms, feel this inherited gap with full intensity - making it overwhelming and impossible to ignore.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: The Non-Negotiable Inner Compass -->
+                <div class="section-card" data-section="3">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <h2>The Non-Negotiable Inner Compass of Autism</h2>
+                        <p class="card-subtitle">Understanding your child's extraordinary internal guidance system</p>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-inner">
+                            <div class="content-section">
+                                <p>Neurodivergence at its core is the product of a non-negotiable inner compass.</p>
+                                
+                                <p>Every human being is born with an inner compass - that quiet internal guidance system that signals what feels right or wrong, energizing or depleting. For most people, this compass whispers. But in a world built around shared expectations, those whispers are easy to ignore.</p>
+                            </div>
+
+                            <div class="insight-box">
+                                <h4>The Key Difference</h4>
+                                <p>Most people have time. They can keep their inner compass muted until they're ready. But neurodivergent children don't have that buffer. Their inner compass is non-negotiable.</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>How It Manifests</h3>
+                                <p>When you have a non-negotiable inner compass and embrace it unapologetically, certain behaviors naturally emerge:</p>
+                                
+                                <div class="steps-grid">
+                                    <div class="step-card">
+                                        <h4>How They Process</h4>
+                                        <p>Their mind works like a detective gathering clues from everywhere at once. Focus becomes so deep that the world around them disappears.</p>
+                                    </div>
+                                    <div class="step-card">
+                                        <h4>Energy Patterns</h4>
+                                        <p>They're sensitive to overstimulation and work in intense bursts followed by necessary recovery.</p>
+                                    </div>
+                                    <div class="step-card">
+                                        <h4>Body Awareness</h4>
+                                        <p>Physical needs are central and strongly guide choices. Emotions are felt deeply in the body.</p>
+                                    </div>
+                                    <div class="step-card">
+                                        <h4>Connection Style</h4>
+                                        <p>Communication is minimal but meaningful. They prefer few close connections and value depth over breadth.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>What Fulfills Them</h3>
+                                <p>Fulfillment comes from internal harmony and authenticity. Success is measured by how aligned and effortless life feels rather than external achievements.</p>
+                                
+                                <p>They're not being defiant; they're being honest about what their system can and cannot handle. Your child's sensitivity can actually guide your whole family toward choices that feel more authentic and sustainable for everyone.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Why Some Children Struggle More -->
+                <div class="section-card" data-section="4">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <h2>Why Some Children Struggle More than Others</h2>
+                        <p class="card-subtitle">Understanding the three key variables that shape autism expression</p>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-inner">
+                            <div class="content-section">
+                                <p>The difference in how autism shows up across children depends on three key variables:</p>
+                                <ul>
+                                    <li>Whether the child's natural orientation is inward or outward when facing overwhelm</li>
+                                    <li>Sensitivity level of the child's nervous system</li>
+                                    <li>Level of authenticity gap in the family system</li>
+                                </ul>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>Two Equally Intelligent Ways of Responding to Overwhelm</h3>
+                                
+                                <div class="steps-grid">
+                                    <div class="step-card">
+                                        <h4>Inward-Oriented Children</h4>
+                                        <p>Naturally turn inward under stress. Their systems choose containment over confrontation. They absorb pressure internally rather than protest externally.</p>
+                                        <p><strong>Result:</strong> Often appear "well-behaved" or "easy" even while carrying silent struggles.</p>
+                                    </div>
+                                    <div class="step-card">
+                                        <h4>Outward-Oriented Children</h4>
+                                        <p>Naturally turn outward under stress. Their systems choose honest expression over internal suppression. When something feels wrong, they let everyone know.</p>
+                                        <p><strong>Result:</strong> Often labeled "difficult" or "intense" because their distress is visible and immediate.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="insight-box">
+                                <h4>Important Understanding</h4>
+                                <p>Neither response is better or worse. They're simply different ways of maintaining integrity when faced with pressure to be someone they're not.</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>The Family System Factor</h3>
+                                <p>The third crucial factor is the level of social conditioning pressure within the family system. When parents feel pressure for their child to appear "normal," children absorb these messages through countless subtle interactions.</p>
+                                
+                                <p>For inward-oriented children, this pressure often intensifies their natural tendency to mask. For outward-oriented children, this same pressure often amplifies their natural tendency to protest.</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>Seeing the Whole Picture</h3>
+                                <p>A highly sensitive inward-oriented child in a family with intense social pressure might appear completely typical while carrying enormous internal stress. Meanwhile, a less sensitive outward-oriented child in the same environment might have daily meltdowns.</p>
+                                
+                                <p>This is why focusing solely on behaviors misses the deeper truth. The struggles we see aren't just about the child - they're about the whole field the child is growing in.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Six Foundational Steps -->
+                <div class="section-card" data-section="5">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <h2>Six Foundational Steps to Nervous System Safety</h2>
+                        <p class="card-subtitle">Practical steps to create authentic foundation for your child</p>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-inner">
+                            <div class="content-section">
+                                <p>At its core, this journey is about becoming an authentic foundation for a child who is wired for truth. It doesn't begin with grand shifts - it starts with simple, honest steps that support both you and your child.</p>
+                            </div>
+
+                            <div class="steps-grid">
+                                <div class="step-card">
+                                    <div class="step-number">1</div>
+                                    <h4>Strengthen Your Own Inner Compass</h4>
+                                    <p>Your inner compass speaks through your body's signals. When considering any choice, pause and notice: Does your breathing deepen or become shallow? Each time you choose from authentic knowing rather than external "shoulds," you strengthen this muscle.</p>
+                                </div>
+                                
+                                <div class="step-card">
+                                    <div class="step-number">2</div>
+                                    <h4>Let Go of Dependence on Your Child's Behavior</h4>
+                                    <p>Your child's calm isn't your source of calm. When your sense of peace depends on how cooperative your child is, they feel it instantly. Your need becomes their pressure. Start by noticing when you're holding your breath, waiting for them to behave a certain way.</p>
+                                </div>
+                                
+                                <div class="step-card">
+                                    <div class="step-number">3</div>
+                                    <h4>Act from a Place of Zero Expectation</h4>
+                                    <p>When you act from zero expectation rather than external pressure, your child feels this difference immediately. Offer support without attachment to whether they accept it. Trust their "no" - they sense things you might miss.</p>
+                                </div>
+                                
+                                <div class="step-card">
+                                    <div class="step-number">4</div>
+                                    <h4>Accept & Trust Your Child's Natural Way of Being</h4>
+                                    <p>Your child is not here to fit into your map. See them as whole, not faulty. Their behaviors aren't signs of deficiency but intelligent signals from a sensitive system responding to what feels inauthentic.</p>
+                                </div>
+                                
+                                <div class="step-card">
+                                    <div class="step-number">5</div>
+                                    <h4>Learn to See Progress Differently</h4>
+                                    <p>Progress isn't measured in milestones. Look for a growing sense of peace in your home, moments of relaxation where tension used to live, and gradually improving health for both you and your child.</p>
+                                </div>
+                                
+                                <div class="step-card">
+                                    <div class="step-number">6</div>
+                                    <h4>Model Authenticity and Build Self-Trust</h4>
+                                    <p>The greatest gift you can offer your child is learning to trust themselves. When you choose your inner knowing over advice, your child witnesses what courage looks like. When the world tells them they're too much, they'll remember: someone saw their truth and celebrated it.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 6: Emergency Response Framework -->
+                <div class="section-card" data-section="6">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <h2>Your 6-Step Emergency Response Framework</h2>
+                        <p class="card-subtitle">For any difficult moment with your child</p>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-inner">
+                            <div class="content-section">
+                                <p>When things get overwhelming - whether it's a meltdown, dangerous behavior, or just another exhausting struggle - you don't need to figure everything out in the moment. You just need these six steps.</p>
+                            </div>
+
+                            <div class="emergency-step">
+                                <h4>Step 1: PAUSE (even for 5 seconds)</h4>
+                                <p>Unless there's immediate physical danger, give yourself a moment to breathe. Take one deep breath, feel your feet on the ground, notice what's happening in your body. Ask yourself: "What do I think will happen if I don't change this situation right now?"</p>
+                                <p><strong>Why this matters:</strong> Your child feels your panic before you even move. This pause breaks that cycle.</p>
+                            </div>
+
+                            <div class="emergency-step">
+                                <h4>Step 2: GET BACKUP IF YOU NEED IT</h4>
+                                <p>If you're overwhelmed, exhausted, or at your limit, it's okay to step back. Ask someone calmer to step in, even for 5 minutes. Remember: you can't pour from an empty cup.</p>
+                                <p><strong>Why this matters:</strong> Your child needs you steady, not heroic.</p>
+                            </div>
+
+                            <div class="emergency-step">
+                                <h4>Step 3: SEE THE PERSON, NOT THE PROBLEM</h4>
+                                <p>Instead of asking "How do I stop this?" ask "What are they trying to tell me?" Look at your child as a whole person communicating the only way they can right now. Trust that their "difficult" behavior is actually their intelligence protecting them.</p>
+                                <p><strong>Why this matters:</strong> Your child isn't being defiant - they're being honest.</p>
+                            </div>
+
+                            <div class="emergency-step">
+                                <h4>Step 4: FOLLOW THEIR LEAD</h4>
+                                <p>Your child's response tells you if you're on the right track. Pay attention to their signals - are they calming down or getting more agitated? If they're protesting your help, try a different approach. Trust their "no."</p>
+                                <p><strong>Why this matters:</strong> Your child is more sensitive than you are. They're your most reliable guide.</p>
+                            </div>
+
+                            <div class="emergency-step">
+                                <h4>Step 5: PAUSE THE ACTIVITY WHEN NEEDED</h4>
+                                <p>Sometimes the kindest choice is stepping back completely from the activity itself. Your child picks up on emotional energy from people and places that you might not notice. If they consistently protest certain activities, try switching providers, changing locations, or offering the service at home.</p>
+                                <p><strong>When protests continue:</strong> Ask yourself what would happen if you paused this activity temporarily. Trust your observations over generic expectations.</p>
+                            </div>
+
+                            <div class="emergency-step">
+                                <h4>Step 6: BUILD YOUR INTERNAL TRUST</h4>
+                                <p>The most important skill you can develop is trusting your own judgment about your child. Notice when your gut feeling conflicts with external advice. Start with small decisions where the stakes feel lower. Remember that you know your child better than any professional who sees them briefly.</p>
+                                <p><strong>Why this matters:</strong> Your intuition about your child is sophisticated and informed by countless hours of observation.</p>
+                            </div>
+
+                            <div class="insight-box">
+                                <h4>Remember</h4>
+                                <p>You don't have to be perfect. Small pauses create big changes. Your calm presence is more powerful than any technique. Every difficult moment is a chance to strengthen your connection, not a sign that something's wrong.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 7: Beyond the Empathy Myth -->
+                <div class="section-card" data-section="7">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <h2>Beyond the Empathy Myth</h2>
+                        <p class="card-subtitle">Your child's profound capacity for love</p>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-inner">
+                            <div class="content-section">
+                                <p>One misunderstanding continues to cause harm - the idea that autistic children lack empathy. This isn't just inaccurate. It's a fundamental misreading of how they process emotion.</p>
+                                
+                                <p>Many autistic children don't feel too little - they feel <em>too much</em>. When they feel safe, they often show striking sensitivity to others' emotions. But this doesn't always look like traditional empathy.</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>Emotional Simulation vs Traditional Empathy</h3>
+                                <p>Instead of calmly recognizing what someone else is feeling, many autistic children <em>absorb</em> those feelings - experiencing them as if they were their own. This is <strong>emotional simulation</strong> - a deep mirroring of another person's emotional state.</p>
+                                
+                                <p>This creates powerful connection, but also has a cost. When there's no clear awareness that "this is your emotion, not mine," the child can become overwhelmed or distressed.</p>
+                            </div>
+
+                            <div class="insight-box">
+                                <h4>The Real Understanding</h4>
+                                <p>Empathy has two sides: emotional over-identification (where a child becomes flooded) and emotional detachment (where empathy is buried under self-protection). Balanced empathy sits in the middle: understanding and feeling with someone while staying grounded.</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>When Overwhelm Blocks Empathy</h3>
+                                <p>When someone is overwhelmed, they can't care for others, even if they want to. When an autistic child is flooded by noise, pressure, or expectation, they go into survival mode. In that state, even the most loving child may not be able to show care.</p>
+                                
+                                <p>Sometimes they notice your distress but don't have the capacity to respond without falling apart themselves. Other times, they feel your emotions so intensely that they freeze, unable to act or speak.</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>Creating Space for Natural Empathy</h3>
+                                <p>When you speak to your child with honesty instead of control - when you explain your needs with warmth instead of pressure - something shifts. When autistic children feel safe and unrushed, their natural empathy begins to emerge.</p>
+                                
+                                <p>You'll often find that they <em>want</em> to care for you. Not because they were told to - but because they can feel your truth, and it matters to them.</p>
+                            </div>
+
+                            <div class="quote">
+                                "That's the difference between compliance and contribution. One drains both people. The other restores them."
+                            </div>
+
+                            <div class="content-section">
+                                <p>Trust in their capacity to love. It's often far deeper than words can show.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 8: The Path Forward -->
+                <div class="section-card" data-section="8">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <h2>The Path Forward</h2>
+                        <p class="card-subtitle">Embracing your child's extraordinary gifts</p>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-inner">
+                            <div class="content-section">
+                                <p>Your child doesn't need perfect parents. They need real ones. Parents willing to slow down enough to understand what's really happening. Parents brave enough to say, "I'll meet you exactly where you are." Parents who trust their own inner knowing enough to create space for their child's authentic nature to emerge.</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>The Beautiful Irony</h3>
+                                <p>What the world sees as neurodivergent children's greatest weakness is actually their greatest strength - but only when we stop trying to fix it.</p>
+                                
+                                <p>The very sensitivity that creates daily struggles when a child feels unsafe becomes their superpower when their nervous system finally relaxes. The same intense awareness that makes them "difficult" in stressful environments transforms into remarkable creativity, deep focus, and intuitive wisdom when they feel free to be themselves.</p>
+                            </div>
+
+                            <div class="insight-box">
+                                <h4>The Rapid Healing Capacity</h4>
+                                <p>Their so-called "rigidity" - that internal compass everyone wishes they could override - turns out to be the exact mechanism that helps them heal rapidly once conditions improve. While other children might adapt slowly to better circumstances, these children spring back to life like flowers after rain.</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>Starting the Transformation</h3>
+                                <p>When you learn to trust your inner compass, you give your child permission to trust theirs. You model that it's safe to honor internal wisdom over external expectations. And that's when their natural brilliance can finally unfold.</p>
+                                
+                                <p>This process begins with you. Not because you're to blame. But because you're the one with the power to shift the soil your child grows from.</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>The Gradual Changes</h3>
+                                <p>As you implement these changes and help your child feel safer in their body, their protesting will gradually reduce. Their tolerance for various activities will improve, and this is when you can try reintroducing paused activities.</p>
+                                
+                                <p>The relief and positive changes begin with each small choice and reorientation you embrace. Every moment you choose to see your child as capable rather than deficient, every time you pause instead of rushing, every instance you trust their process instead of forcing outcomes - these micro-shifts accumulate into profound transformation.</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3>A Process, Not Perfection</h3>
+                                <p>Strengthening your relationship with your child is a process. Choosing not to do something temporarily doesn't mean you can never do it again. It means it's not suitable right now and you can revisit it when your child's wellbeing improves.</p>
+                                
+                                <p>Your child's struggles are not a life sentence - they're a roadmap to freedom for the whole family.</p>
+                            </div>
+
+                            <div class="quote">
+                                "The greatest irony? In trying to make these children less sensitive, we've been working against the very quality that allows them to thrive spectacularly when given the right conditions."
+                            </div>
+
+                            <div class="content-section">
+                                <p>The same nervous system that can deteriorate quickly under pressure can heal just as quickly when supported. What looks like fragility is actually remarkable resilience - the ability to respond authentically to their environment rather than pretending everything is fine when it isn't.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Call to Action - Outside expandable sections -->
+            <div style="text-align: center; margin: 3rem 0; padding: 2rem; background: white; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); border: 1px solid #f0f0f0;">
+                <p style="font-size: 1.1rem; margin-bottom: 1.5rem; color: #666;">
+                    Ready to see how this approach translates into practice?
+                </p>
+                <a href="index.html#sessions" style="display: inline-block; background: var(--primary-color); color: white; padding: 1rem 2rem; text-decoration: none; border-radius: 8px; font-size: 1rem; font-weight: 500; transition: all 0.3s ease;">
+                    What to Expect in Our Sessions
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" onclick="scrollToTop()" style="
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        z-index: 1000;
+    ">↑</button>
+
+    <script>
+        // Toggle card expansion
+        function toggleCard(header) {
+            const card = header.parentElement;
+            card.classList.toggle('expanded');
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const sections = document.querySelectorAll('.section-card');
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight - windowHeight;
+            const scrollTop = window.pageYOffset;
+            
+            const progress = (scrollTop / documentHeight) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // Show/hide back to top button
+        function toggleBackToTop() {
+            const button = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                button.style.display = 'flex';
+            } else {
+                button.style.display = 'none';
+            }
+        }
+
+        // Scroll to top
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', function() {
+            updateProgress();
+            toggleBackToTop();
+        });
+
+        // Auto-expand first section on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstCard = document.querySelector('.section-card');
+            if (firstCard) {
+                firstCard.classList.add('expanded');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
