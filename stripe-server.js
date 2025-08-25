@@ -1,9 +1,19 @@
 // Load env from .env during local dev
 require('dotenv').config();
 
+// Debug environment variables
+console.log('Environment check:');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('All env vars:', Object.keys(process.env).filter(key => key.includes('STRIPE')));
+console.log('STRIPE_SECRET_KEY present:', !!process.env.STRIPE_SECRET_KEY);
+console.log('STRIPE_SECRET_KEY length:', process.env.STRIPE_SECRET_KEY?.length || 0);
+
 if (!process.env.STRIPE_SECRET_KEY) {
+  console.error('❌ STRIPE_SECRET_KEY is missing from environment variables');
   throw new Error('Missing STRIPE_SECRET_KEY. Set it in your deployment env or in a local .env file.');
 }
+
+console.log('✅ STRIPE_SECRET_KEY found, initializing Stripe...');
 
 const express = require('express');
 const cors = require('cors');
