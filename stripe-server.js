@@ -1,6 +1,8 @@
-// Load .env file only in development (local only)
-if (process.env.NODE_ENV !== 'production') {
+// Load .env file only if it exists (for local development)
+try {
     require('dotenv').config({ path: '../.env' });
+} catch (error) {
+    // .env file doesn't exist - use environment variables directly (Railway/production)
 }
 
 const express = require('express');
