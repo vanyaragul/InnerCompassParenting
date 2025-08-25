@@ -1,6 +1,13 @@
 // Load env from .env during local dev
 require('dotenv').config();
 
+// Railway-specific debugging
+console.log('=== RAILWAY DEBUG ===');
+console.log('RAILWAY_ENVIRONMENT:', process.env.RAILWAY_ENVIRONMENT);
+console.log('RAILWAY_PROJECT_ID:', process.env.RAILWAY_PROJECT_ID);
+console.log('All env vars available:', Object.keys(process.env).sort());
+console.log('===================');
+
 // Debug environment variables
 console.log('Environment check:');
 console.log('NODE_ENV:', process.env.NODE_ENV);
