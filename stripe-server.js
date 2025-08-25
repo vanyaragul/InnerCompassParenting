@@ -1,23 +1,11 @@
-// Load .env file only in development (when file exists)
+// Load .env file only in development (local only)
 if (process.env.NODE_ENV !== 'production') {
-    try {
-        require('dotenv').config({ path: '../.env' });
-    } catch (error) {
-        // Fallback to default dotenv behavior if ../env doesn't exist
-        require('dotenv').config();
-    }
+    require('dotenv').config({ path: '../.env' });
 }
+
 const express = require('express');
 const cors = require('cors');
-// Debug environment variables
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('STRIPE_SECRET_KEY present:', !!process.env.STRIPE_SECRET_KEY);
-console.log('STRIPE_SECRET_KEY starts with sk_:', process.env.STRIPE_SECRET_KEY?.startsWith('sk_'));
-
-const stripeKey = process.env.STRIPE_SECRET_KEY || 'your-stripe-secret-key-here';
-console.log('Using Stripe key starting with:', stripeKey.substring(0, 7) + '...');
-
-const stripe = require('stripe')(stripeKey);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'your-stripe-secret-key-here');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
