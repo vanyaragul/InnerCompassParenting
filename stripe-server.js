@@ -1,4 +1,12 @@
-require('dotenv').config({ path: '../.env' });
+// Load .env file only in development (when file exists)
+if (process.env.NODE_ENV !== 'production') {
+    try {
+        require('dotenv').config({ path: '../.env' });
+    } catch (error) {
+        // Fallback to default dotenv behavior if ../env doesn't exist
+        require('dotenv').config();
+    }
+}
 const express = require('express');
 const cors = require('cors');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'your-stripe-secret-key-here');
