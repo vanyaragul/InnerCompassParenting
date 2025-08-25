@@ -1,13 +1,13 @@
-// Load .env file only if it exists (for local development)
-try {
-    require('dotenv').config({ path: '../.env' });
-} catch (error) {
-    // .env file doesn't exist - use environment variables directly (Railway/production)
+// Load env from .env during local dev
+require('dotenv').config();
+
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('Missing STRIPE_SECRET_KEY. Set it in your deployment env or in a local .env file.');
 }
 
 const express = require('express');
 const cors = require('cors');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'your-stripe-secret-key-here');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
