@@ -108,7 +108,7 @@
         /* Header */
         header {
             background: var(--soft-grey);
-            padding: 1rem 0;
+            padding: 0rem 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
@@ -124,9 +124,12 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            color: var(--text-color);
-            font-weight: 600;
+            margin-left: -5px;
+        }
+
+        .logo img {
+            height: 65px;
+            width: auto;
         }
 
         .logout-btn {
@@ -517,11 +520,7 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
-                        <path d="M15 5C8 5 3 10 3 15s5 10 12 10 12-5 12-10S22 5 15 5z" stroke="var(--primary-color)" stroke-width="2"/>
-                        <path d="M15 10c-3 0-5 2-5 5s2 5 5 5 5-2 5-5-2-5-5-5z" fill="var(--primary-color)"/>
-                    </svg>
-                    <span>Inner Compass Parenting</span>
+                    <a href="index.html"><img src="./logo.svg" alt="Inner Compass Parenting"></a>
                 </div>
                 <a href="#" class="logout-btn">Log Out</a>
             </div>
