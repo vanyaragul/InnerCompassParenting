@@ -62,6 +62,9 @@
         }
 
         .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -76,36 +79,6 @@
         .logo img {
             height: 65px;
             width: auto;
-        }
-
-        .nav-links {
-            list-style: none;
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-color);
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-color);
-        }
-
-        .login-link {
-            background: var(--primary-color);
-            color: white !important;
-            padding: 0.5rem 1.25rem;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .login-link:hover {
-            background: var(--primary-color);
-            color: white !important;
         }
 
         .nav-links {
@@ -581,19 +554,11 @@
 <body>
     <!-- Header -->
     <header>
-        <div class="container">
-            <nav class="header-content">
-                <div class="logo">
-                    <a href="index.html"><img src="./logo.svg" alt="Inner Compass Parenting"></a>
-                </div>
-                <ul class="nav-links">
-                    <li><a href="index.html#about">Our Story</a></li>
-                    <li><a href="index.html#sessions">What to Expect</a></li>
-                    <li><a href="booking_choice.html">Sessions & Packages</a></li>
-                    <li><a href="index.html#contact">Contact</a></li>
-                    <li><a href="client_portal.html" class="login-link">Log In</a></li>
-                </ul>
-            </nav>
+        <div class="header-content">
+            <div class="logo">
+                <a href="index.html"><img src="./logo.svg" alt="Inner Compass Parenting"></a>
+            </div>
+            <a href="booking_choice.html" class="back-link">← Back to Options</a>
         </div>
     </header>
 
@@ -1288,48 +1253,6 @@
                 throw error;
             }
         }
-
-        // Show/hide back to top button
-        function toggleBackToTop() {
-            const button = document.getElementById('backToTop');
-            if (window.pageYOffset > 300) {
-                button.style.display = 'flex';
-            } else {
-                button.style.display = 'none';
-            }
-        }
-
-        // Scroll to top
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-
-        // Event listener
-        window.addEventListener('scroll', toggleBackToTop);
     </script>
-
-    <!-- Back to Top Button -->
-    <button id="backToTop" onclick="scrollToTop()" style="
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        cursor: pointer;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        transition: all 0.3s ease;
-        z-index: 1000;
-    ">↑</button>
 </body>
 </html>
