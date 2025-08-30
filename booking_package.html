@@ -106,6 +106,68 @@
             color: white !important;
         }
 
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .hamburger-line {
+            width: 25px;
+            height: 3px;
+            background: var(--text-color);
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 65px;
+            left: 0;
+            width: 100%;
+            background: var(--soft-grey);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 99;
+        }
+
+        .mobile-nav.active {
+            display: block;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mobile-nav-links li {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .mobile-nav-links li:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-nav-links a {
+            display: block;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+
+        .mobile-nav-links a:hover {
+            background: rgba(101, 151, 184, 0.1);
+            color: var(--primary-color);
+        }
+
         /* Hero Section */
         .hero {
             background: linear-gradient(135deg, rgba(101, 151, 184, 0.05) 0%, rgba(116, 148, 148, 0.05) 100%);
@@ -533,6 +595,10 @@
                 display: none;
             }
 
+            .mobile-menu-btn {
+                display: flex;
+            }
+
             .hero h1 {
                 font-size: 1.8rem;
             }
@@ -561,9 +627,25 @@
                     <li><a href="index.html#contact">Contact</a></li>
                     <li><a href="client_portal.html" class="login-link">Log In</a></li>
                 </ul>
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
             </nav>
         </div>
     </header>
+
+    <!-- Mobile Navigation Menu -->
+    <div class="mobile-nav" id="mobileNav">
+        <ul class="mobile-nav-links">
+            <li><a href="index.html#about" onclick="closeMobileMenu()">Our Story</a></li>
+            <li><a href="index.html#sessions" onclick="closeMobileMenu()">What to Expect</a></li>
+            <li><a href="booking_choice.html" onclick="closeMobileMenu()">Sessions & Packages</a></li>
+            <li><a href="index.html#contact" onclick="closeMobileMenu()">Contact</a></li>
+            <li><a href="client_portal.html" onclick="closeMobileMenu()">Log In</a></li>
+        </ul>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -1236,6 +1318,69 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeMap();
         });
+
+        // Show/hide back to top button
+        function toggleBackToTop() {
+            const button = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                button.style.display = 'flex';
+            } else {
+                button.style.display = 'none';
+            }
+        }
+
+        // Scroll to top
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Event listener
+        window.addEventListener('scroll', toggleBackToTop);
+
+        // Mobile menu functions
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.remove('active');
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileNav = document.getElementById('mobileNav');
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            
+            if (!mobileNav.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+                mobileNav.classList.remove('active');
+            }
+        });
     </script>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" onclick="scrollToTop()" style="
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        z-index: 1000;
+    ">↑</button>
 </body>
 </html>
