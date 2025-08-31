@@ -962,7 +962,6 @@
                     
                     // Update book button text
                     document.getElementById('book-button').textContent = 'Save Payment Method & Complete Booking';
-                    document.getElementById('book-button').style.display = 'block';
 
                     console.log('Calendly event scheduled:', e.data.event_details);
                 }
@@ -1112,12 +1111,15 @@
             document.getElementById('summary-session').textContent = sessionNames[sessionType];
             updatePrice();
             
+            // Show the book button immediately after session selection
+            document.getElementById('book-button').style.display = 'block';
+            document.getElementById('book-button').textContent = 'Continue to Scheduling';
+            
             // Load Calendly with session type
             loadCalendlyWidget(sessionType);
             
             // Show calendar
             document.getElementById('calendar-section').style.display = 'block';
-            document.getElementById('book-button').style.display = 'block';
             
             // Update progress
             updateProgress(3);
