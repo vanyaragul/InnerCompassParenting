@@ -30,9 +30,6 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Railway-specific: Ensure we listen on 0.0.0.0 for Railway deployment
-const HOST = process.env.RAILWAY_ENVIRONMENT ? '0.0.0.0' : 'localhost';
-
 // Middleware
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
@@ -256,15 +253,46 @@ app.get('/health', (req, res) => {
     res.json({ status: 'OK', message: 'Stripe server is running' });
 });
 
-app.listen(PORT, HOST, () => {
-    console.log(`🚀 Stripe server running on ${HOST}:${PORT}`);
+const server = app.listen(PORT, () => {
+    console.log(`🚀 Stripe server running on port ${PORT}`);
     console.log(`💳 Ready to process payments with Inner Compass Parenting`);
     console.log(`🌍 Railway Environment: ${process.env.RAILWAY_ENVIRONMENT || 'Local'}`);
+    console.log(`🔧 Process ID: ${process.pid}`);
+    console.log(`🔧 Node.js Version: ${process.version}`);
+    console.log(`🔧 Server will stay alive and listen for requests...`);
     if (process.env.NODE_ENV !== 'production') {
-        console.log(`🔧 Test your integration at http://${HOST}:${PORT}/booking_package.html`);
+        console.log(`🔧 Test your integration at http://localhost:${PORT}/booking_package.html`);
     }
 }).on('error', (err) => {
     console.error('❌ Server failed to start:', err);
+    process.exit(1);
+});
+
+// Handle process signals gracefully
+process.on('SIGTERM', () => {
+    console.log('📋 SIGTERM signal received: closing HTTP server');
+    server.close(() => {
+        console.log('🔄 HTTP server closed');
+        process.exit(0);
+    });
+});
+
+process.on('SIGINT', () => {
+    console.log('📋 SIGINT signal received: closing HTTP server');
+    server.close(() => {
+        console.log('🔄 HTTP server closed');
+        process.exit(0);
+    });
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+    console.error('💥 Uncaught Exception:', err);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('💥 Unhandled Rejection at:', promise, 'reason:', reason);
     process.exit(1);
 });
 
