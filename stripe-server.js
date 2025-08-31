@@ -5,6 +5,7 @@ require('dotenv').config();
 console.log('=== RAILWAY DEBUG ===');
 console.log('RAILWAY_ENVIRONMENT:', process.env.RAILWAY_ENVIRONMENT);
 console.log('RAILWAY_PROJECT_ID:', process.env.RAILWAY_PROJECT_ID);
+console.log('Assigned PORT:', process.env.PORT);
 console.log('All env vars available:', Object.keys(process.env).sort());
 console.log('===================');
 
@@ -28,6 +29,9 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Railway-specific: Ensure we listen on 0.0.0.0 for Railway deployment
+const HOST = process.env.RAILWAY_ENVIRONMENT ? '0.0.0.0' : 'localhost';
 
 // Middleware
 app.use(cors({
@@ -252,12 +256,16 @@ app.get('/health', (req, res) => {
     res.json({ status: 'OK', message: 'Stripe server is running' });
 });
 
-app.listen(PORT, () => {
-    console.log(`🚀 Stripe server running on port ${PORT}`);
+app.listen(PORT, HOST, () => {
+    console.log(`🚀 Stripe server running on ${HOST}:${PORT}`);
     console.log(`💳 Ready to process payments with Inner Compass Parenting`);
+    console.log(`🌍 Railway Environment: ${process.env.RAILWAY_ENVIRONMENT || 'Local'}`);
     if (process.env.NODE_ENV !== 'production') {
-        console.log(`🔧 Test your integration at http://localhost:${PORT}/booking_package.html`);
+        console.log(`🔧 Test your integration at http://${HOST}:${PORT}/booking_package.html`);
     }
+}).on('error', (err) => {
+    console.error('❌ Server failed to start:', err);
+    process.exit(1);
 });
 
 module.exports = app;
