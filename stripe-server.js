@@ -260,9 +260,20 @@ const server = app.listen(PORT, () => {
     console.log(`🔧 Process ID: ${process.pid}`);
     console.log(`🔧 Node.js Version: ${process.version}`);
     console.log(`🔧 Server will stay alive and listen for requests...`);
+    
+    // Keep the process alive with a heartbeat
+    const heartbeat = setInterval(() => {
+        console.log(`💓 Server heartbeat - ${new Date().toISOString()}`);
+    }, 30000); // Log every 30 seconds
+    
     if (process.env.NODE_ENV !== 'production') {
         console.log(`🔧 Test your integration at http://localhost:${PORT}/booking_package.html`);
     }
+    
+    // Clear heartbeat on server close
+    server.on('close', () => {
+        clearInterval(heartbeat);
+    });
 }).on('error', (err) => {
     console.error('❌ Server failed to start:', err);
     process.exit(1);
