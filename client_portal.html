@@ -132,9 +132,39 @@
             width: auto;
         }
 
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .login-link {
+            background: var(--primary-color);
+            color: white !important;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .login-link:hover {
+            background: var(--primary-color);
+            color: white !important;
+        }
+
         .logout-btn {
             background: var(--secondary-color);
-            color: white;
+            color: white !important;
             padding: 0.5rem 1.25rem;
             border-radius: 6px;
             text-decoration: none;
@@ -144,6 +174,47 @@
 
         .logout-btn:hover {
             background: var(--text-color);
+            color: white !important;
+        }
+
+        /* Scroll to Top Button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            background-color: var(--text-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+
+        .scroll-to-top::before {
+            content: '↑';
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            line-height: 1;
         }
 
         /* Welcome Section */
@@ -490,6 +561,24 @@
         Loading your dashboard...
     </div>
 
+    <!-- Login Header -->
+    <header id="loginHeader" class="hidden">
+        <div class="container">
+            <nav class="header-content">
+                <div class="logo">
+                    <a href="index.html"><img src="./logo.svg" alt="Inner Compass Parenting"></a>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html#about">Our Story</a></li>
+                    <li><a href="index.html#sessions">What to Expect</a></li>
+                    <li><a href="booking_choice.html">Sessions & Packages</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                    <li><a href="client_portal.html" class="login-link">Log In</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
     <!-- Login Form -->
     <div id="loginForm" class="login-form hidden">
         <h2 style="text-align: center; margin-bottom: 2rem; color: var(--text-color);">Client Portal</h2>
@@ -518,12 +607,18 @@
     <!-- Header -->
     <header>
         <div class="container">
-            <div class="header-content">
+            <nav class="header-content">
                 <div class="logo">
                     <a href="index.html"><img src="./logo.svg" alt="Inner Compass Parenting"></a>
                 </div>
-                <a href="#" class="logout-btn">Log Out</a>
-            </div>
+                <ul class="nav-links">
+                    <li><a href="index.html#about">Our Story</a></li>
+                    <li><a href="index.html#sessions">What to Expect</a></li>
+                    <li><a href="booking_choice.html">Sessions & Packages</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                    <li><a href="#" class="logout-btn">Log Out</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
 
@@ -739,11 +834,22 @@
             const dashboard = document.getElementById('dashboard');
 
             try {
-                // If Supabase is not configured, show login form for demo purposes
+                // If Supabase is not configured, use demo mode with localStorage
                 if (!supabase || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY_HERE') {
-                    console.log('Supabase not configured - showing login form');
-                    loading.classList.add('hidden');
-                    loginForm.classList.remove('hidden');
+                    console.log('Supabase not configured - using demo mode');
+                    
+                    // Check if user is already logged in via localStorage
+                    const demoSession = localStorage.getItem('demoSession');
+                    if (demoSession) {
+                        const mockUser = JSON.parse(demoSession);
+                        await loadDashboard(mockUser);
+                        loading.classList.add('hidden');
+                        dashboard.classList.remove('hidden');
+                    } else {
+                        loading.classList.add('hidden');
+                        document.getElementById('loginHeader').classList.remove('hidden');
+                        loginForm.classList.remove('hidden');
+                    }
                     return;
                 }
 
@@ -755,12 +861,14 @@
                     dashboard.classList.remove('hidden');
                 } else {
                     loading.classList.add('hidden');
+                    document.getElementById('loginHeader').classList.remove('hidden');
                     loginForm.classList.remove('hidden');
                 }
             } catch (error) {
                 console.error('Auth check failed:', error);
                 // Show login form on error
                 loading.classList.add('hidden');
+                document.getElementById('loginHeader').classList.remove('hidden');
                 loginForm.classList.remove('hidden');
             }
         }
@@ -780,7 +888,11 @@
                         }
                     };
                     
+                    // Save demo session to localStorage
+                    localStorage.setItem('demoSession', JSON.stringify(mockUser));
+                    
                     await loadDashboard(mockUser);
+                    document.getElementById('loginHeader').classList.add('hidden');
                     document.getElementById('loginForm').classList.add('hidden');
                     document.getElementById('dashboard').classList.remove('hidden');
                     return;
@@ -794,6 +906,7 @@
                 if (error) throw error;
 
                 await loadDashboard(data.user);
+                document.getElementById('loginHeader').classList.add('hidden');
                 document.getElementById('loginForm').classList.add('hidden');
                 document.getElementById('dashboard').classList.remove('hidden');
                 
@@ -806,12 +919,16 @@
 
         async function signOut() {
             try {
+                // Clear demo session from localStorage
+                localStorage.removeItem('demoSession');
+                
                 if (supabase) {
                     const { error } = await supabase.auth.signOut();
                     if (error) throw error;
                 }
                 
                 document.getElementById('dashboard').classList.add('hidden');
+                document.getElementById('loginHeader').classList.remove('hidden');
                 document.getElementById('loginForm').classList.remove('hidden');
                 document.getElementById('error').classList.add('hidden');
                 document.getElementById('authForm').reset();
@@ -1001,6 +1118,36 @@
                 { date: 'Aug 26', type: 'In-Person 2hr', time: '10:00 AM' }
             ]
         };
+
+    </script>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top"></button>
+
+    <script>
+        // Scroll to Top functionality - separate script to ensure button element exists
+        document.addEventListener('DOMContentLoaded', function() {
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+            
+            if (scrollToTopBtn) {
+                // Show/hide button based on scroll position
+                window.addEventListener('scroll', () => {
+                    if (window.pageYOffset > 300) {
+                        scrollToTopBtn.classList.add('visible');
+                    } else {
+                        scrollToTopBtn.classList.remove('visible');
+                    }
+                });
+                
+                // Smooth scroll to top when clicked
+                scrollToTopBtn.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        });
     </script>
 </body>
 </html>
