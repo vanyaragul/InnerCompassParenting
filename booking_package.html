@@ -106,27 +106,76 @@
             color: white !important;
         }
 
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, rgba(101, 151, 184, 0.05) 0%, rgba(116, 148, 148, 0.05) 100%);
-            padding: 3rem 0;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
+        /* Progress Bar */
+        .progress-bar {
+            background: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
         }
 
-        .hero h1 {
-            font-size: 2.2rem;
-            margin-bottom: 1rem;
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--secondary-color);
+            z-index: 0;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #999;
+            margin-bottom: 0.5rem;
+        }
+
+        .step.active .step-circle {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .step.completed .step-circle {
+            background: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .step.active .step-label {
             color: var(--text-color);
             font-weight: 600;
         }
 
-        .hero p {
-            font-size: 1.1rem;
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto;
-        }
 
         /* Location Section */
         .location-section {
@@ -169,12 +218,13 @@
         /* Geocoder Container */
         #geocoder-container {
             margin-bottom: 1.5rem;
+            width: 100%;
         }
 
         /* Override Mapbox Geocoder Styles */
         .mapboxgl-ctrl-geocoder {
-            width: 100%;
-            max-width: 100%;
+            width: 100% !important;
+            max-width: none !important;
             box-shadow: none !important;
             border: 2px solid var(--border-color);
             border-radius: 8px;
@@ -197,10 +247,10 @@
             display: none !important;
         }
 
-        /* Map Container */
+        /* Map Container - Fit within left column */
         #map {
-            width: 100%;
-            height: 400px;
+            width: 100%; /* Full width of the left column container */
+            height: 300px; /* Slightly smaller height to match proportions */
             border-radius: 12px;
             margin-top: 1rem;
             display: none;
@@ -270,11 +320,11 @@
             background: #5687a8;
         }
 
-        /* Package Builder Grid */
+        /* Package Builder Grid - Match Single Session Layout */
         .package-builder {
             display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
+            grid-template-columns: 3.5fr 2fr; /* Match single session page proportions */
+            gap: 3rem; /* Match single session page gap */
             margin: 2rem 0;
         }
 
@@ -463,6 +513,213 @@
             font-size: 0.85rem;
         }
 
+        /* Account Creation Section */
+        .account-creation-step {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            border: 1px solid var(--secondary-color);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h3 {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .account-benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, rgba(101, 151, 184, 0.05) 0%, rgba(116, 148, 148, 0.05) 100%);
+            border: 1px solid rgba(101, 151, 184, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .benefit-icon {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .benefit-item strong {
+            display: block;
+            color: var(--text-color);
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .benefit-item small {
+            color: #666;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 2px solid var(--secondary-color);
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .create-account-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .create-account-btn:hover {
+            background: #5687a8;
+        }
+
+        .create-account-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Updated Order Summary Styles */
+        .payment-options-preview {
+            margin-top: 1rem;
+        }
+
+        .payment-hint {
+            text-align: center;
+            color: #999;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        .account-setup-full {
+            background: linear-gradient(135deg, rgba(101, 151, 184, 0.03) 0%, rgba(116, 148, 148, 0.03) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin: 1.5rem 0 1rem 0;
+            padding: 1.5rem;
+        }
+
+        .account-header-full {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .account-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 1.1rem;
+        }
+
+        .account-status.complete {
+            color: var(--secondary-color);
+        }
+
+        .status-icon {
+            font-size: 1.3rem;
+        }
+
+        .account-form-full {
+            /* Form styling handled by existing form-group-compact styles */
+        }
+
+        .account-intro {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group-compact {
+            margin-bottom: 0.75rem;
+        }
+
+        .form-group-compact input {
+            width: 100%;
+            padding: 0.6rem;
+            font-size: 0.95rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group-compact input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .save-account-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .save-account-btn:hover {
+            background: #638080;
+        }
+
+        .payment-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
         .total-section {
             border-top: 2px solid var(--primary-color);
             padding-top: 1rem;
@@ -572,9 +829,13 @@
             .nav-links {
                 display: none;
             }
+            
+            .progress-steps {
+                font-size: 0.8rem;
+            }
 
-            .hero h1 {
-                font-size: 1.8rem;
+            #map {
+                width: 100%; /* Full width on mobile */
             }
 
             .zone-details {
@@ -605,62 +866,85 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
+    <!-- Progress Bar -->
+    <div class="progress-bar">
         <div class="container">
-            <h1>Design Your Custom Package</h1>
-            <p>Build your personalized support plan with location-based pricing</p>
+            <div class="progress-steps">
+                <div class="step active">
+                    <div class="step-circle">1</div>
+                    <span class="step-label">Location</span>
+                </div>
+                <div class="step">
+                    <div class="step-circle">2</div>
+                    <span class="step-label">Sessions</span>
+                </div>
+                <div class="step">
+                    <div class="step-circle">3</div>
+                    <span class="step-label">Account</span>
+                </div>
+                <div class="step">
+                    <div class="step-circle">4</div>
+                    <span class="step-label">Payment</span>
+                </div>
+                <div class="step">
+                    <div class="step-circle">5</div>
+                    <span class="step-label">Complete</span>
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
 
     <!-- Main Content -->
     <main class="container">
-        <!-- Location Input Section -->
-        <div class="location-section">
-            <div class="location-header">
-                <div class="location-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                        <circle cx="12" cy="10" r="3"/>
-                    </svg>
-                </div>
-                <div class="location-title">
-                    <h2>Step 1: Your Location</h2>
-                    <p>We provide in-person services within 60 minutes of Chilliwack, BC</p>
-                </div>
-            </div>
-            
-            <!-- Geocoder will be inserted here -->
-            <div id="geocoder-container"></div>
-            
-            <!-- Map Container -->
-            <div id="map"></div>
-            
-            <!-- Zone Indicator -->
-            <div class="zone-indicator" id="zone-indicator">
-                <h3 style="color: var(--primary-color); margin-bottom: 1rem;">✓ Service Zone Confirmed</h3>
-                <div class="zone-details">
-                    <div class="zone-info">
-                        <div><strong>Your Address:</strong> <span id="client-address">-</span></div>
-                        <div><strong>Distance:</strong> <span id="distance">-</span> km</div>
-                    </div>
-                    <div class="zone-badge" id="zone-badge">Zone -</div>
-                </div>
-            </div>
-            
-            <!-- Outside Service Area Message -->
-            <div class="outside-area" id="outside-area">
-                <h3 style="color: #856404; margin-bottom: 0.5rem;">Outside Service Area</h3>
-                <p style="color: #856404;">This location is beyond our in-person service area. We'd love to support you through virtual sessions!</p>
-                <a href="#virtual-sessions" class="virtual-suggestion">View Virtual Session Options</a>
-            </div>
-        </div>
 
         <!-- Package Builder Grid -->
         <div class="package-builder">
-            <!-- Session Selection -->
-            <div class="session-selection">
-                <h2>Step 2: Choose Your Sessions</h2>
+            <!-- Left Column: Location & Session Selection -->
+            <div>
+                <!-- Move Location Section into Left Column -->
+                <div class="location-section" style="margin: 0 0 2rem 0;">
+                    <div class="location-header">
+                        <div class="location-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                        </div>
+                        <div class="location-title">
+                            <h2>Your Location</h2>
+                            <p>We provide in-person services within 60 minutes of Chilliwack, BC</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Geocoder will be inserted here -->
+                    <div id="geocoder-container"></div>
+                    
+                    <!-- Zone Indicator -->
+                    <div class="zone-indicator" id="zone-indicator">
+                        <h3 style="color: var(--primary-color); margin-bottom: 1rem;">✓ Service Zone Confirmed</h3>
+                        <div class="zone-details">
+                            <div class="zone-info">
+                                <div><strong>Your Address:</strong> <span id="client-address">-</span></div>
+                                <div><strong>Distance:</strong> <span id="distance">-</span> km</div>
+                            </div>
+                            <div class="zone-badge" id="zone-badge">Zone -</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Map Container -->
+                    <div id="map"></div>
+                    
+                    <!-- Outside Service Area Message -->
+                    <div class="outside-area" id="outside-area">
+                        <h3 style="color: #856404; margin-bottom: 0.5rem;">Outside Service Area</h3>
+                        <p style="color: #856404;">This location is beyond our in-person service area. We'd love to support you through virtual sessions!</p>
+                        <a href="#virtual-sessions" class="virtual-suggestion">View Virtual Session Options</a>
+                    </div>
+                </div>
+                
+                <!-- Session Selection -->
+                <div class="session-selection">
+                <h2>Choose Your Sessions</h2>
                 
                 <!-- Default message when no location entered -->
                 <div class="no-location-message" id="no-location-message">
@@ -729,8 +1013,9 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Order Summary -->
+            </div>
+            
+            <!-- Right Column: Order Summary -->
             <div class="order-summary">
                 <h2>Your Package Summary</h2>
                 <div id="cart-items">
@@ -738,17 +1023,54 @@
                         Select sessions to build your custom package
                     </div>
                 </div>
-                <div class="total-section" id="total-section">
+                
+                <!-- Total Section (Always Visible) -->
+                <div class="total-section active" id="total-section">
                     <div class="total-final">
                         <span>Total:</span>
                         <span id="total-price">$0</span>
                     </div>
-                    <button class="payment-btn primary" onclick="proceedToPayment()" id="pay-now-btn">
-                        Pay Now
-                    </button>
-                    <button class="payment-btn secondary" onclick="proceedToInstallments()" id="installment-btn">
-                        Pay in Installments
-                    </button>
+                    
+                    <!-- Payment Options Always Visible -->
+                    <div class="payment-options-preview" id="payment-preview">
+                        <button class="payment-btn primary" disabled id="pay-now-btn">
+                            Pay Now
+                        </button>
+                        <button class="payment-btn secondary" disabled id="installment-btn">
+                            Pay in Installments
+                        </button>
+                        <p class="payment-hint">Add sessions to enable payment</p>
+                    </div>
+                </div>
+                
+                <!-- Account Setup (Full View) -->
+                <div class="account-setup-full" id="account-setup-full" style="display: none;">
+                    <div class="account-header-full">
+                        <span class="account-status" id="account-status">
+                            <span class="status-icon">👤</span>
+                            Create Your Account
+                        </span>
+                    </div>
+                    
+                    <div class="account-form-full">
+                        <p class="account-intro">Create an account to manage your sessions</p>
+                        
+                        <div class="form-group-compact">
+                            <input type="email" id="account-email" placeholder="Email address" required>
+                        </div>
+                        
+                        <div class="form-group-compact">
+                            <input type="password" id="account-password" placeholder="Password (8+ characters)" required>
+                        </div>
+                        
+                        <div class="form-group-compact">
+                            <input type="password" id="account-password-confirm" placeholder="Confirm password" required>
+                        </div>
+                        
+                        <button class="save-account-btn" onclick="saveAccountInfo()">
+                            Save Account Info
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1084,15 +1406,24 @@
             updateCartDisplay(total);
         }
         
-        // Update cart display
+        // Update cart display function
         function updateCartDisplay(total) {
             const cartContainer = document.getElementById('cart-items');
-            const totalSection = document.getElementById('total-section');
+            const accountSetup = document.getElementById('account-setup-full');
+            const payNowBtn = document.getElementById('pay-now-btn');
+            const installmentBtn = document.getElementById('installment-btn');
+            const paymentHint = document.querySelector('.payment-hint');
             
             if (Object.keys(cart).length === 0) {
+                // Empty cart
                 cartContainer.innerHTML = '<div class="empty-cart">Select sessions to build your custom package</div>';
-                totalSection.classList.remove('active');
+                accountSetup.style.display = 'none';
+                payNowBtn.disabled = true;
+                installmentBtn.disabled = true;
+                if (paymentHint) paymentHint.style.display = 'block';
+                document.getElementById('total-price').textContent = '$0';
             } else {
+                // Has items in cart
                 cartContainer.innerHTML = Object.values(cart).map(item => `
                     <div class="summary-item">
                         <div>
@@ -1104,26 +1435,102 @@
                 `).join('');
                 
                 document.getElementById('total-price').textContent = `$${total}`;
-                totalSection.classList.add('active');
+                
+                // Show account setup section in full view
+                accountSetup.style.display = 'block';
+                
+                // Update progress to step 3 (Account) when sessions added
+                if (!window.accountCreated) {
+                    updateProgress(3);
+                }
+                
+                // Enable/disable payment buttons based on account status
+                if (window.accountCreated) {
+                    payNowBtn.disabled = false;
+                    installmentBtn.disabled = false;
+                    if (paymentHint) paymentHint.style.display = 'none';
+                } else {
+                    payNowBtn.disabled = true;
+                    installmentBtn.disabled = true;
+                    if (paymentHint) paymentHint.textContent = 'Complete account setup to continue';
+                }
             }
         }
         
-        // Payment handlers
+        // Save account info
+        function saveAccountInfo() {
+            const email = document.getElementById('account-email').value;
+            const password = document.getElementById('account-password').value;
+            const confirmPassword = document.getElementById('account-password-confirm').value;
+            
+            // Validation
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+            
+            if (!password || password.length < 8) {
+                alert('Password must be at least 8 characters long.');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match.');
+                return;
+            }
+            
+            // Store account info
+            window.accountEmail = email;
+            window.accountPassword = password;
+            window.accountCreated = true;
+            
+            // Update UI
+            const accountStatus = document.getElementById('account-status');
+            accountStatus.innerHTML = '<span class="status-icon">✓</span> Account Ready';
+            accountStatus.classList.add('complete');
+            
+            // Hide the account setup form
+            document.getElementById('account-setup-full').style.display = 'none';
+            
+            // Update progress to step 4 (Payment)
+            updateProgress(4);
+            
+            // Update cart display to enable buttons
+            const total = Object.values(cart).reduce((sum, item) => sum + item.total, 0);
+            updateCartDisplay(total);
+            
+            console.log('Account ready for:', email);
+        }
+        
+        // Modified payment handlers to check account
         async function proceedToPayment() {
+            if (!window.accountCreated) {
+                // Scroll to account section if not completed
+                document.getElementById('account-setup-full').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+            
             const total = Object.values(cart).reduce((sum, item) => sum + item.total, 0);
             if (total === 0) {
                 alert('Please select at least one session');
                 return;
             }
             
-            // Send to webhook
-            await sendToWebhook('one-time', total);
+            // Update progress to step 5 (Complete)
+            updateProgress(5);
             
-            // Create Stripe checkout
+            // Continue with existing payment logic
+            await sendToWebhook('one-time', total);
             await createCheckoutSession('payment', total);
         }
-        
+
         async function proceedToInstallments() {
+            if (!window.accountCreated) {
+                // Scroll to account section if not completed
+                document.getElementById('account-setup-full').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+            
             const total = Object.values(cart).reduce((sum, item) => sum + item.total, 0);
             if (total === 0) {
                 alert('Please select at least one session');
@@ -1133,6 +1540,9 @@
             // Calculate installments
             const weeklyAmount = Math.max(50, Math.ceil(total / 10));
             const weeks = Math.ceil(total / weeklyAmount);
+            
+            // Update progress to step 5 (Complete)
+            updateProgress(5);
             
             // Send to webhook
             await sendToWebhook('installment', total);
@@ -1154,6 +1564,9 @@
                         sessions: cart,
                         total_amount: total,
                         payment_type: paymentType,
+                        customer_email: window.accountEmail || '',
+                        create_account: true,
+                        booking_type: 'package',
                         timestamp: new Date().toISOString()
                     })
                 });
@@ -1173,22 +1586,12 @@
                 });
 
                 // Check if backend is accessible
-                // Backend URL configuration
+                // Backend URL configuration - Updated for Netlify Functions
                 const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                    ? 'http://localhost:3001'
-                    : 'https://innercompassparenting-production.up.railway.app';
+                    ? 'http://localhost:8888/.netlify/functions'  // Netlify Dev server
+                    : '/.netlify/functions';  // Production Netlify Functions
                 
-                // Test backend connection first
-                try {
-                    const healthCheck = await fetch(`${backendUrl}/health`);
-                    if (!healthCheck.ok) {
-                        throw new Error('Backend health check failed');
-                    }
-                } catch (healthError) {
-                    console.error('Backend connection failed:', healthError);
-                    alert(`❌ Backend server not running!\n\nPlease:\n1. Open terminal in your project folder\n2. Run "npm install"\n3. Run "npm start"\n4. Wait for "Stripe server running" message\n5. Try again`);
-                    return;
-                }
+                // Netlify Functions don't need health checks - they're serverless and auto-scale
 
                 const totalSessions = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
                 const cartArray = Object.values(cart);
@@ -1246,7 +1649,10 @@
                             installment_weeks: weeks || 0,
                             client_address: clientAddress || 'Not provided',
                             zone: currentZone ? `Zone ${currentZone}` : 'Virtual Only',
-                            cart: JSON.stringify(cartArray)
+                            cart: JSON.stringify(cartArray),
+                            customer_email: window.accountEmail || '',
+                            create_account: true,
+                            booking_type: 'package'
                         }
                     }),
                 });
@@ -1272,6 +1678,21 @@
             }
         }
         
+        // Update progress bar
+        function updateProgress(step) {
+            document.querySelectorAll('.step').forEach((stepEl, index) => {
+                if (index < step - 1) {
+                    stepEl.classList.add('completed');
+                    stepEl.classList.remove('active');
+                } else if (index === step - 1) {
+                    stepEl.classList.add('active');
+                    stepEl.classList.remove('completed');
+                } else {
+                    stepEl.classList.remove('active', 'completed');
+                }
+            });
+        }
+
         // Initialize on load
         document.addEventListener('DOMContentLoaded', function() {
             initializeMap();
