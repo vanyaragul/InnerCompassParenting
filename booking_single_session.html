@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Single Session - Inner Compass Parenting</title>
+    <title>Book Single Session (Cal.com) - Inner Compass Parenting</title>
     
     <!-- Stripe Integration -->
     <script src="https://js.stripe.com/v3/"></script>
@@ -19,9 +19,9 @@
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css' type='text/css' />
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js'></script>
     
-    <!-- Calendly CSS for better integration -->
-    <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
-    <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+    <!-- Cal.com Integration -->
+    <script>window.Cal=function(){ Cal.q = Cal.q || []; Cal.q.push(arguments);};</script>
+    <script async src="https://app.cal.com/embed.js"></script>
     
     <style>
         :root {
@@ -30,6 +30,7 @@
             --text-color: #556570;
             --light-bg: #f8f9fa;
             --soft-grey: #f1f2f4;
+            --border-color: #e9ecef;
         }
         
         * {
@@ -46,7 +47,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -109,21 +110,6 @@
         .login-link:hover {
             background: var(--primary-color);
             color: white !important;
-        }
-
-        .back-link {
-            background: transparent;
-            color: var(--primary-color);
-            padding: 0.5rem 1.25rem;
-            border-radius: 6px;
-            border: 1px solid #6597b8;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .back-link:hover {
-            background: var(--primary-color);
-            color: white;
         }
 
         /* Progress Bar */
@@ -199,19 +185,25 @@
         /* Main Layout */
         .booking-layout {
             display: grid;
-            grid-template-columns: 2fr 1.5fr;
-            gap: 2rem;
+            grid-template-columns: 3.5fr 2fr;
+            gap: 3rem;
             margin: 2rem 0;
         }
 
-        /* Location Section */
-        .location-section {
+        .section-container {
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+
+        .location-section,
+        .session-section,
+        .email-collection-step,
+        .calendar-section {
             background: white;
             border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-            border: 1px solid var(--secondary-color);
-            margin-bottom: 2rem;
+            padding: 2rem 0;
+            margin: 2rem 0;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
         }
 
         .section-header {
@@ -219,6 +211,7 @@
             align-items: center;
             gap: 1rem;
             margin-bottom: 1.5rem;
+            padding: 0;
         }
 
         .section-icon {
@@ -232,19 +225,56 @@
             color: white;
         }
 
-        .section-title h2 {
+        .location-section h2,
+        .session-section h2,
+        .email-collection-step h2,
+        .calendar-section h2 {
+            padding-left: 2rem;
+            margin: 0 0 0.25rem 0;
             color: var(--text-color);
-            font-size: 1.3rem;
-            margin-bottom: 0.25rem;
+            font-size: 1.4rem;
         }
 
-        .section-title p {
+        .location-section p,
+        .session-section p,
+        .email-collection-step p,
+        .calendar-section p {
+            padding-left: 2rem;
+            margin: 0 0 1.5rem 0;
             color: #888;
             font-size: 0.9rem;
         }
 
-        #geocoder {
-            margin-bottom: 1.5rem;
+        /* Geocoder alignment */
+        #geocoder-container {
+            margin: 0 2rem 1.5rem 2rem;
+            padding: 0;
+        }
+
+        .mapboxgl-ctrl-geocoder {
+            width: 100% !important;
+            max-width: none !important;
+            box-shadow: none !important;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            margin-left: 0 !important;
+        }
+
+        .mapboxgl-ctrl-geocoder--input {
+            padding: 0.75rem !important;
+            font-size: 1rem !important;
+            color: var(--text-color) !important;
+        }
+        
+        .mapboxgl-ctrl-geocoder--input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .mapboxgl-ctrl-geocoder--icon-search {
+            display: none !important;
         }
 
         .address-input {
@@ -253,6 +283,7 @@
             font-size: 1rem;
             border: 2px solid var(--secondary-color);
             border-radius: 8px;
+            margin: 0 2rem 1.5rem 2rem;
         }
 
         .address-input:focus {
@@ -261,53 +292,52 @@
         }
 
         #map {
-            height: 250px;
+            margin: 1.5rem 2rem;
+            width: calc(100% - 4rem);
+            height: 400px;
             border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 1rem;
-            background: var(--secondary-color);
             display: none;
         }
 
-        .zone-confirmed {
-            background: linear-gradient(135deg, rgba(101, 151, 184, 0.1) 0%, rgba(116, 148, 148, 0.1) 100%);
-            border: 2px solid #6597b8;
+        .zone-indicator {
+            background: linear-gradient(135deg, rgba(101, 151, 184, 0.08) 0%, rgba(116, 148, 148, 0.08) 100%);
+            border: 2px solid var(--primary-color);
             border-radius: 12px;
-            padding: 1rem;
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 2rem;
             display: none;
         }
 
-        .zone-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .zone-indicator.active {
+            display: block;
         }
 
-        .zone-badge {
-            background: var(--primary-color);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 20px;
+        .zone-text {
+            font-size: 1.05rem;
             font-weight: 600;
+            color: var(--text-color);
+            margin: 0 0 0.5rem 0;
+            padding: 0;
+        }
+
+        .helper-text {
+            font-size: 0.95rem;
+            color: #666;
+            margin: 0;
+            padding: 0;
         }
 
         /* Session Selection */
         .session-section {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-            border: 1px solid var(--secondary-color);
-            margin-bottom: 2rem;
             display: none;
         }
 
         .children-selector {
+            margin: 0 2rem 1rem 2rem;
             background: linear-gradient(135deg, rgba(101, 151, 184, 0.05) 0%, rgba(116, 148, 148, 0.05) 100%);
             border: 1px solid rgba(101, 151, 184, 0.2);
             border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
+            padding: 1rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -349,6 +379,7 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            padding: 0 2rem;
         }
 
         .session-option {
@@ -401,20 +432,117 @@
             font-size: 0.9rem;
         }
 
-        /* Calendar Section */
-        .calendar-section {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-            border: 1px solid var(--secondary-color);
-            display: none;
-            min-height: 500px;
+        .session-category h3 {
+            padding-left: 2rem;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            margin: 1.5rem 0 1rem 0;
         }
 
-        .calendly-inline-widget {
-            min-width: 100%;
-            height: 500px;
+        /* Calendar Section */
+        .calendar-section {
+            display: none;
+            min-height: 600px;
+        }
+
+        /* Cal.com widget styling */
+        .cal-widget {
+            width: calc(100% - 4rem);
+            height: 600px;
+            margin: 0 2rem;
+            border: none;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .cal-container {
+            width: 100%;
+            height: 600px;
+            position: relative;
+        }
+
+        /* Email Collection */
+        .email-collection-step {
+            display: none;
+        }
+
+        .form-group {
+            margin: 0 2rem 1.5rem 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 2px solid var(--secondary-color);
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .account-option {
+            background: linear-gradient(135deg, rgba(101, 151, 184, 0.05) 0%, rgba(116, 148, 148, 0.05) 100%);
+            border: 1px solid rgba(101, 151, 184, 0.2);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 0 2rem 2rem 2rem;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 0.75rem;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 0.75rem;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+        }
+
+        .account-benefits {
+            color: #666;
+            font-size: 0.85rem;
+            margin-left: 2.5rem;
+            line-height: 1.4;
+        }
+
+        .continue-btn {
+            margin: 0 2rem;
+            width: calc(100% - 4rem);
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .continue-btn:hover {
+            background: #5687a8;
+        }
+
+        .continue-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
 
         /* Summary Panel */
@@ -431,7 +559,7 @@
 
         .summary-title {
             color: var(--text-color);
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 600;
             margin-bottom: 1.5rem;
             padding-bottom: 1rem;
@@ -457,6 +585,8 @@
         .summary-value {
             color: var(--text-color);
             font-weight: 600;
+            text-align: right;
+            max-width: 65%;
         }
 
         .summary-note {
@@ -479,111 +609,6 @@
             line-height: 1.5;
         }
 
-        .book-button {
-            width: 100%;
-            padding: 1rem;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 1.5rem;
-            transition: all 0.3s ease;
-            display: none;
-        }
-
-        .book-button:hover {
-            background: #5687a8;
-        }
-
-        .book-button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        /* Payment Method Section */
-        .payment-section {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-            border: 1px solid var(--secondary-color);
-            margin-bottom: 2rem;
-            display: none;
-        }
-
-        .payment-form {
-            margin-top: 1.5rem;
-        }
-
-        #card-element {
-            padding: 1rem;
-            border: 2px solid var(--secondary-color);
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-
-        #card-element.StripeElement--focus {
-            border-color: var(--primary-color);
-        }
-
-        #card-errors {
-            color: #dc3545;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
-
-        /* Placeholder states */
-        .placeholder-message {
-            text-align: center;
-            color: #999;
-            padding: 3rem;
-            background: var(--light-bg);
-            border-radius: 12px;
-        }
-
-        /* Scroll to Top Button */
-        .scroll-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            background-color: var(--primary-color);
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .scroll-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .scroll-to-top:hover {
-            background-color: var(--text-color);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
-        }
-
-        .scroll-to-top::before {
-            content: '↑';
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            line-height: 1;
-        }
-
         @media (max-width: 768px) {
             .booking-layout {
                 grid-template-columns: 1fr;
@@ -596,10 +621,6 @@
             
             .nav-links {
                 display: none;
-            }
-            
-            .progress-steps {
-                font-size: 0.8rem;
             }
         }
     </style>
@@ -635,11 +656,11 @@
                 </div>
                 <div class="step">
                     <div class="step-circle">3</div>
-                    <span class="step-label">Schedule</span>
+                    <span class="step-label">Contact Info</span>
                 </div>
                 <div class="step">
                     <div class="step-circle">4</div>
-                    <span class="step-label">Payment</span>
+                    <span class="step-label">Schedule</span>
                 </div>
             </div>
         </div>
@@ -652,50 +673,24 @@
             <div>
                 <!-- Step 1: Location -->
                 <div class="location-section">
-                    <div class="section-header">
-                        <div class="section-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                                <circle cx="12" cy="10" r="3"/>
-                            </svg>
-                        </div>
-                        <div class="section-title">
-                            <h2>Your Location</h2>
-                            <p>We provide in-person services within 60 minutes of Chilliwack</p>
-                        </div>
-                    </div>
+                    <h2>Your Location</h2>
+                    <p>We provide in-person services within 60 minutes of Chilliwack</p>
                     
-                    <div id="geocoder">
-                        <!-- Mapbox geocoder will be inserted here -->
+                    <div id="geocoder-container"></div>
+                    
+                    <!-- Zone Indicator -->
+                    <div class="zone-indicator" id="zone-indicator">
+                        <div class="zone-text" id="zone-text">Zone 1 confirmed</div>
+                        <div class="helper-text">Scroll down to choose your session type</div>
                     </div>
                     
                     <div id="map"></div>
-                    
-                    <div class="zone-confirmed" id="zone-confirmed">
-                        <div class="zone-info">
-                            <div>
-                                <strong>Service Zone Confirmed ✓</strong><br>
-                                <span id="client-address" style="color: #666; font-size: 0.9rem;">123 Main St, Abbotsford</span>
-                            </div>
-                            <div class="zone-badge">Zone 2</div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Step 2: Session Selection -->
                 <div class="session-section" id="session-section">
-                    <div class="section-header">
-                        <div class="section-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"/>
-                                <path d="M12 6v6l4 2"/>
-                            </svg>
-                        </div>
-                        <div class="section-title">
-                            <h2>Select Your Session</h2>
-                            <p>Choose the session type that best fits your needs</p>
-                        </div>
-                    </div>
+                    <h2>Select Your Session</h2>
+                    <p>Choose the session type that best fits your needs</p>
 
                     <div class="children-selector">
                         <div>
@@ -709,8 +704,8 @@
                         </div>
                     </div>
 
-                    <!-- Virtual Sessions (Always Available) -->
-                    <h3 style="color: var(--primary-color); font-size: 1rem; margin-bottom: 0.75rem;">Virtual Sessions</h3>
+                    <!-- Virtual Sessions -->
+                    <h3>Virtual Sessions</h3>
                     <div class="session-options">
                         <label class="session-option">
                             <input type="radio" name="session" value="virtual-30" onchange="selectSession('virtual-30', 50)">
@@ -731,56 +726,47 @@
                         </label>
                     </div>
 
-                    <!-- In-Person Sessions (Zone-specific, populated dynamically) -->
+                    <!-- In-Person Sessions -->
                     <div id="zone-sessions" style="margin-top: 1.5rem;">
                         <!-- Will be populated based on zone -->
                     </div>
                 </div>
 
-                <!-- Step 3: Calendar -->
-                <div class="calendar-section" id="calendar-section">
-                    <div class="section-header">
-                        <div class="section-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="4" width="18" height="18" rx="2"/>
-                                <line x1="16" y1="2" x2="16" y2="6"/>
-                                <line x1="8" y1="2" x2="8" y2="6"/>
-                                <line x1="3" y1="10" x2="21" y2="10"/>
-                            </svg>
-                        </div>
-                        <div class="section-title">
-                            <h2>Choose Your Time</h2>
-                            <p>Select an available slot that works for your schedule</p>
+                <!-- Step 3: Contact Information -->
+                <div class="email-collection-step" id="contact-info-step">
+                    <h2>Contact Information</h2>
+                    <p>We'll use this to pre-fill your booking and send confirmations</p>
+                    
+                    <div class="form-group">
+                        <label for="customer-name">Full Name</label>
+                        <input type="text" id="customer-name" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customer-email">Email Address</label>
+                        <input type="email" id="customer-email" placeholder="your@email.com" required>
+                    </div>
+                    
+                    <div class="account-option">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="create-account-single">
+                            <span class="checkmark"></span>
+                            Create an account for easy rescheduling and session tracking
+                        </label>
+                        <div class="account-benefits">
+                            <small>• Reschedule online anytime • Track session history • Access client portal</small>
                         </div>
                     </div>
                     
-                    <!-- Calendly will be embedded here -->
-                    <div class="calendly-inline-widget" id="calendly-widget" style="min-width:320px;height:500px;">
-                        <!-- Calendly widget will be loaded dynamically -->
-                    </div>
+                    <button class="continue-btn" onclick="proceedToScheduling()">Continue to Scheduling</button>
                 </div>
 
-                <!-- Step 4: Payment Method -->
-                <div class="payment-section" id="payment-section">
-                    <div class="section-header">
-                        <div class="section-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="11" width="18" height="10" rx="2"/>
-                                <circle cx="12" cy="16" r="1"/>
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                            </svg>
-                        </div>
-                        <div class="section-title">
-                            <h2>Secure Payment Method</h2>
-                            <p>Your card will be saved securely but not charged until after your session</p>
-                        </div>
-                    </div>
-                    
-                    <div class="payment-form">
-                        <div id="card-element">
-                            <!-- Stripe Elements will create form elements here -->
-                        </div>
-                        <div id="card-errors" role="alert"></div>
+                <!-- Step 4: Calendar -->
+                <div class="calendar-section" id="calendar-section">
+                    <h2>Schedule Your Session</h2>
+                    <p>Choose your preferred date and time</p>
+                    <div class="cal-container" id="cal-widget-container">
+                        <!-- Cal.com widget will be embedded here -->
                     </div>
                 </div>
             </div>
@@ -820,10 +806,6 @@
                         Your card will be securely saved but not charged until after your session is complete. Cancel free up to 24 hours before your appointment.
                     </div>
                 </div>
-                
-                <button class="book-button" id="book-button" onclick="proceedToBooking()">
-                    Complete Booking
-                </button>
             </div>
         </div>
     </div>
@@ -831,11 +813,6 @@
     <script>
         // Configuration
         const MAPBOX_TOKEN = 'pk.eyJ1IjoiaW5uZXJjb21wYXNzIiwiYSI6ImNtZWwwOTlmeTBiNWoya3B0bjUzOXVnaXoifQ.lG1eUEw--WQFShwMCWDBxA';
-        const MAKE_WEBHOOK_URL = 'YOUR_MAKE_WEBHOOK_URL_HERE';
-        const CALENDLY_BASE_URL = 'https://calendly.com/innercompass';
-        
-        // Stripe initialization (using existing test key from the project)
-        const stripe = Stripe('pk_test_51RyJYLP5nKv78UY6iT3wmvP7eswDmK0ELC6o1aJWiHHh8aq0tZ7N7Da1vR65kw2oRv7ixnBm4PLLSxEADjmmUAVd009yoEMITN');
         
         // Global variables
         let currentStep = 1;
@@ -846,10 +823,6 @@
         let clientCoordinates = null;
         let map = null;
         let geocoder = null;
-        let setupIntent = null;
-        let elements = null;
-        let cardElement = null;
-        let isCalendlyEventScheduled = false;
 
         // Chilliwack center coordinates
         const CHILLIWACK_CENTER = [-121.9558, 49.1628];
@@ -865,8 +838,6 @@
         // Initialize everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
             initializeMapbox();
-            initializeStripeElements();
-            setupCalendlyListeners();
         });
 
         function initializeMapbox() {
@@ -875,24 +846,24 @@
             // Initialize map
             map = new mapboxgl.Map({
                 container: 'map',
-                style: 'mapbox://styles/mapbox/streets-v11',
+                style: 'mapbox://styles/mapbox/streets-v12',
                 center: CHILLIWACK_CENTER,
                 zoom: 10
             });
 
-            // Initialize geocoder
+            // Initialize geocoder (same as working booking_package version)
             geocoder = new MapboxGeocoder({
                 accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl,
-                placeholder: 'Enter your address...',
-                proximity: CHILLIWACK_CENTER,
                 countries: 'ca',
-                bbox: [-123.5, 48.5, -120.5, 50.0], // BC lower mainland bounding box
+                proximity: { longitude: CHILLIWACK_CENTER[0], latitude: CHILLIWACK_CENTER[1] },
+                placeholder: 'Enter your address...',
+                bbox: [-124.0, 48.0, -120.0, 50.5],
+                types: 'address,poi',
                 marker: false
             });
 
-            // Add geocoder to the page
-            document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+            // Add geocoder to container (not to map)
+            document.getElementById('geocoder-container').appendChild(geocoder.onAdd());
 
             // Handle geocoder results
             geocoder.on('result', function(e) {
@@ -914,60 +885,6 @@
             });
         }
 
-        function initializeStripeElements() {
-            // Create Stripe Elements
-            elements = stripe.elements();
-
-            // Create card element
-            cardElement = elements.create('card', {
-                style: {
-                    base: {
-                        fontSize: '16px',
-                        color: '#424770',
-                        '::placeholder': {
-                            color: '#aab7c4',
-                        },
-                    },
-                    invalid: {
-                        color: '#9e2146',
-                    },
-                },
-            });
-
-            // Mount card element
-            cardElement.mount('#card-element');
-
-            // Handle validation errors
-            cardElement.addEventListener('change', function(event) {
-                const displayError = document.getElementById('card-errors');
-                if (event.error) {
-                    displayError.textContent = event.error.message;
-                } else {
-                    displayError.textContent = '';
-                }
-            });
-        }
-
-        function setupCalendlyListeners() {
-            // Listen for Calendly events
-            window.addEventListener('message', function(e) {
-                if (e.data.event && e.data.event === 'calendly.event_scheduled') {
-                    isCalendlyEventScheduled = true;
-                    
-                    // Show payment section
-                    document.getElementById('payment-section').style.display = 'block';
-                    
-                    // Update progress to step 4
-                    updateProgress(4);
-                    
-                    // Update book button text
-                    document.getElementById('book-button').textContent = 'Save Payment Method & Complete Booking';
-
-                    console.log('Calendly event scheduled:', e.data.event_details);
-                }
-            });
-        }
-
         function calculateZoneAndDistance(coordinates, address) {
             // Calculate distance using Turf.js
             const from = turf.point(CHILLIWACK_CENTER);
@@ -977,7 +894,7 @@
             console.log(`Distance: ${distance.toFixed(2)} km`);
 
             // Determine zone
-            let zone = 4; // Default to highest zone
+            let zone = 4;
             for (let z = 1; z <= 4; z++) {
                 if (distance <= ZONES[z].max) {
                     zone = z;
@@ -986,31 +903,33 @@
             }
 
             if (distance > 60) {
-                // Outside service area
                 alert('Sorry, this address is outside our service area. Please choose virtual sessions or consider an address within 60 minutes of Chilliwack.');
                 return;
             }
 
-            // Update map view
-            const bounds = new mapboxgl.LngLatBounds();
-            bounds.extend(CHILLIWACK_CENTER);
-            bounds.extend(coordinates);
-            map.fitBounds(bounds, { padding: 50 });
-
-            // Add client location marker
-            new mapboxgl.Marker({ color: 'var(--secondary-color)' })
-                .setLngLat(coordinates)
-                .setPopup(new mapboxgl.Popup().setHTML(`<strong>Your Location</strong><br>${address}`))
-                .addTo(map);
-
-            // Show route
-            getRoute(CHILLIWACK_CENTER, coordinates);
-
             // Update UI
             document.getElementById('map').style.display = 'block';
-            document.getElementById('zone-confirmed').style.display = 'block';
-            document.getElementById('client-address').textContent = address;
-            document.querySelector('.zone-badge').textContent = `Zone ${zone}`;
+            document.getElementById('zone-indicator').classList.add('active');
+            document.getElementById('zone-text').textContent = `Zone ${zone} confirmed`;
+
+            // Update map
+            setTimeout(() => {
+                map.resize();
+                
+                const bounds = new mapboxgl.LngLatBounds();
+                bounds.extend(CHILLIWACK_CENTER);
+                bounds.extend(coordinates);
+                map.fitBounds(bounds, { padding: 50 });
+
+                // Add client location marker
+                new mapboxgl.Marker({ color: 'var(--secondary-color)' })
+                    .setLngLat(coordinates)
+                    .setPopup(new mapboxgl.Popup().setHTML(`<strong>Your Location</strong><br>${address}`))
+                    .addTo(map);
+
+                // Show route
+                getRoute(CHILLIWACK_CENTER, coordinates);
+            }, 100);
 
             // Update summary
             document.getElementById('summary-location').textContent = address;
@@ -1018,11 +937,7 @@
 
             // Show session selection
             document.getElementById('session-section').style.display = 'block';
-
-            // Populate zone-specific sessions
             populateZoneSessions(zone);
-
-            // Update progress
             updateProgress(2);
             currentZone = zone;
         }
@@ -1111,46 +1026,55 @@
             document.getElementById('summary-session').textContent = sessionNames[sessionType];
             updatePrice();
             
-            // Show the book button immediately after session selection
-            document.getElementById('book-button').style.display = 'block';
-            document.getElementById('book-button').textContent = 'Continue to Scheduling';
-            
-            // Load Calendly with session type
-            loadCalendlyWidget(sessionType);
-            
-            // Show calendar
-            document.getElementById('calendar-section').style.display = 'block';
-            
-            // Update progress
+            // Show contact info step
+            document.getElementById('contact-info-step').style.display = 'block';
             updateProgress(3);
         }
 
-        function loadCalendlyWidget(sessionType) {
-            const calendlyUrl = `${CALENDLY_BASE_URL}/${sessionType}`;
+        function proceedToScheduling() {
+            const name = document.getElementById('customer-name').value.trim();
+            const email = document.getElementById('customer-email').value.trim();
             
-            // Clear existing widget
-            document.getElementById('calendly-widget').innerHTML = '';
+            if (!name || !email || !email.includes('@')) {
+                alert('Please fill in all required fields with valid information.');
+                return;
+            }
             
-            // Load new widget
-            Calendly.initInlineWidget({
-                url: calendlyUrl,
-                parentElement: document.getElementById('calendly-widget'),
-                prefill: {
-                    email: '',
-                    firstName: '',
-                    lastName: '',
-                    customAnswers: {
-                        a1: clientAddress || '',
-                        a2: currentZone ? `Zone ${currentZone}` : '',
-                        a3: document.getElementById('num-children').value || '1'
-                    }
-                },
-                utm: {
-                    utmCampaign: 'single-session-booking',
-                    utmSource: 'website',
-                    utmMedium: 'booking-page'
-                }
-            });
+            // Show calendar section
+            document.getElementById('calendar-section').style.display = 'block';
+            loadCalcomWidget();
+            updateProgress(4);
+        }
+
+        function loadCalcomWidget() {
+            const name = document.getElementById('customer-name').value.trim();
+            const email = document.getElementById('customer-email').value.trim();
+            
+            // Map session types to Cal.com event slugs
+            const calcomEvents = {
+                'virtual-30': '30-min-zoom-call',
+                'virtual-60': '60-min-zoom-call', 
+                'inperson-60': '60-min-home-visit',
+                'inperson-120': '120-min-home-visit'
+            };
+            
+            const eventSlug = calcomEvents[selectedSession] || '60-min-zoom-call';
+            
+            // Use iframe method (works better than official embed)
+            const iframeUrl = `https://cal.com/innercompassparenting/${eventSlug}?embed=true`;
+            const calContainer = document.getElementById('cal-widget-container');
+            
+            calContainer.innerHTML = `
+                <iframe 
+                    src="${iframeUrl}" 
+                    width="100%" 
+                    height="600" 
+                    frameborder="0"
+                    style="border-radius: 8px; min-height: 600px;">
+                </iframe>
+            `;
+            
+            console.log(`Loaded Cal.com iframe for ${selectedSession} -> ${eventSlug}: ${iframeUrl}`);
         }
 
         function changeChildren(delta) {
@@ -1158,7 +1082,6 @@
             const newValue = Math.max(1, Math.min(5, parseInt(input.value) + delta));
             input.value = newValue;
             
-            // Update summary
             document.getElementById('summary-children').textContent = 
                 newValue === 1 ? '1 child' : `${newValue} children`;
             
@@ -1191,154 +1114,6 @@
                 }
             });
         }
-
-        async function createSetupIntent() {
-            try {
-                const response = await fetch('/create-setup-intent', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        customer_email: '',  // Will be filled from Calendly data
-                        metadata: {
-                            session_type: selectedSession,
-                            address: clientAddress,
-                            zone: currentZone,
-                            num_children: document.getElementById('num-children').value,
-                            total_price: document.getElementById('summary-price').textContent
-                        }
-                    })
-                });
-
-                const data = await response.json();
-                
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-
-                return data.client_secret;
-            } catch (error) {
-                console.error('Error creating setup intent:', error);
-                throw error;
-            }
-        }
-
-        async function proceedToBooking() {
-            // Validate that all steps are complete
-            if (!isCalendlyEventScheduled) {
-                alert('Please schedule your session time first.');
-                return;
-            }
-
-            if (!selectedSession || !currentZone) {
-                alert('Please complete all booking steps.');
-                return;
-            }
-
-            try {
-                // Disable button to prevent double submission
-                const bookButton = document.getElementById('book-button');
-                bookButton.disabled = true;
-                bookButton.textContent = 'Processing...';
-
-                // Create setup intent for $0 authorization
-                const clientSecret = await createSetupIntent();
-                
-                // Confirm setup intent with actual card element
-                const { error, setupIntent } = await stripe.confirmCardSetup(clientSecret, {
-                    payment_method: {
-                        card: cardElement,
-                        billing_details: {
-                            address: {
-                                line1: clientAddress
-                            }
-                        }
-                    }
-                });
-
-                if (error) {
-                    console.error('Setup intent error:', error);
-                    document.getElementById('card-errors').textContent = error.message;
-                    bookButton.disabled = false;
-                    bookButton.textContent = 'Save Payment Method & Complete Booking';
-                    return;
-                }
-
-                // Send booking data to Make webhook
-                await sendBookingToMake(setupIntent.payment_method);
-                
-                // Success - redirect or show confirmation
-                window.location.href = 'confirmation.html?booking=success';
-                
-            } catch (error) {
-                console.error('Booking error:', error);
-                alert('Error processing booking. Please try again.');
-                
-                // Re-enable button
-                const bookButton = document.getElementById('book-button');
-                bookButton.disabled = false;
-                bookButton.textContent = 'Save Payment Method & Complete Booking';
-            }
-        }
-
-        async function sendBookingToMake(paymentMethodId) {
-            const bookingData = {
-                address: clientAddress,
-                coordinates: clientCoordinates,
-                zone: currentZone,
-                session_type: selectedSession,
-                session_price: sessionPrice,
-                num_children: document.getElementById('num-children').value,
-                total_price: document.getElementById('summary-price').textContent,
-                payment_method_id: paymentMethodId,
-                booking_date: new Date().toISOString()
-            };
-
-            try {
-                const response = await fetch(MAKE_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(bookingData)
-                });
-
-                if (!response.ok) {
-                    throw new Error('Webhook delivery failed');
-                }
-
-                console.log('Booking data sent to Make successfully');
-            } catch (error) {
-                console.error('Error sending to Make webhook:', error);
-                throw error;
-            }
-        }
-    </script>
-
-    <!-- Scroll to Top Button -->
-    <button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top"></button>
-
-    <script>
-        // Scroll to Top functionality
-        const scrollToTopBtn = document.getElementById('scrollToTop');
-        
-        // Show/hide button based on scroll position
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                scrollToTopBtn.classList.add('visible');
-            } else {
-                scrollToTopBtn.classList.remove('visible');
-            }
-        });
-        
-        // Smooth scroll to top when clicked
-        scrollToTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
     </script>
 </body>
 </html>

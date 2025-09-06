@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cal.com Test Page - Inner Compass Parenting</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #6597b8;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .cal-button {
+            background: #6597b8;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .cal-button:hover {
+            background: #5687a8;
+            transform: translateY(-2px);
+        }
+        
+        .widget-container {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            margin-top: 20px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+        
+        .test-info {
+            background: #e7f3ff;
+            border: 1px solid #b8daff;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .test-info h3 {
+            color: #004085;
+            margin: 0 0 10px 0;
+        }
+        
+        .test-info p {
+            color: #004085;
+            margin: 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Cal.com Integration Test</h1>
+        
+        <div class="test-info">
+            <h3>Testing Your Cal.com Event Types</h3>
+            <p>Click each button to test the different Cal.com event types. Check the browser console for any errors.</p>
+        </div>
+        
+        <div class="button-grid">
+            <button class="cal-button" onclick="loadCalEvent('30-min-zoom-call')">
+                📹 30min Zoom Call
+            </button>
+            
+            <button class="cal-button" onclick="loadCalEvent('60-min-zoom-call')">
+                📹 60min Zoom Call
+            </button>
+            
+            <button class="cal-button" onclick="loadCalEvent('60-min-home-visit')">
+                🏠 60min Home Visit
+            </button>
+            
+            <button class="cal-button" onclick="loadCalEvent('120-min-home-visit')">
+                🏠 120min Home Visit
+            </button>
+        </div>
+        
+        <div id="current-test" style="text-align: center; color: #666; margin: 10px 0;">
+            Click a button to test that Cal.com event type
+        </div>
+        
+        <div class="widget-container" id="cal-widget">
+            Click a button above to load Cal.com widget here
+        </div>
+    </div>
+
+    <!-- Cal.com Scripts -->
+    <script>
+        (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; p(cal, ar); return; } let api = function () { let f = ar[0]; let a = ar[1]; let k = a && a.callback; let r = a && a.config ? a.config : {}; let hl = a && a.config && a.config.hightlightedDates ? a.config.hightlightedDates : undefined; r.embedJsUrl = r.embedJsUrl || 'https://app.cal.com/embed.js'; let q = [...cal.q]; delete cal.q; q.forEach(function (i) { p(api, i); }); let iframe = d.createElement('iframe'); let embedStyles = '::-webkit-scrollbar{width: 2px;}::-webkit-scrollbar, ::-webkit-scrollbar-track{background: transparent;}::-webkit-scrollbar-thumb{background: #d6d6d6;}::-webkit-scrollbar-thumb:hover{background: #b3b3b3;}'; let s = function (src) { let sEl = d.createElement('style'); sEl.innerText = embedStyles; d.head.appendChild(sEl); iframe.src = src; let embedWrapper = d.createElement('div'); embedWrapper.className = 'cal-embed-responsive cal-embed-responsive-aspect-ratio'; let aspectRatio = r.aspectRatio; embedWrapper.style.position = 'relative'; embedWrapper.style.overflow = 'hidden'; embedWrapper.style.height = '100%'; iframe.style.position = 'absolute'; iframe.style.top = '0'; iframe.style.left = '0'; iframe.style.width = '100%'; iframe.style.height = '100%'; iframe.style.border = '0'; iframe.frameborder = 0; iframe.allowfullscreen = true; embedWrapper.appendChild(iframe); let target = d.querySelector(a.elementOrSelector); if (!target) { console.error("Target element not found"); return; } target.innerHTML = ''; target.appendChild(embedWrapper); }; let src; let prefillString = r.prefill ? new URLSearchParams(r.prefill).toString() : null; src = r.embedJsUrl + '?embed=' + encodeURIComponent(JSON.stringify(r)) + '&embedType=' + encodeURIComponent(f); if (prefillString) { src += '&prefill=' + encodeURIComponent(prefillString); } s(src); }; cal.loaded = true; if (cal.q) { cal.q.forEach(function (i) { p(api, i); }); } return api; }; })(window, 0, 0);
+    </script>
+
+    <script>
+        let currentWidget = null;
+        
+        function loadCalEvent(eventSlug) {
+            const widget = document.getElementById('cal-widget');
+            const testInfo = document.getElementById('current-test');
+            
+            console.log(`🧪 Testing Cal.com event: ${eventSlug}`);
+            testInfo.textContent = `Testing: ${eventSlug}`;
+            
+            // Clear previous widget
+            widget.innerHTML = 'Loading Cal.com widget...';
+            
+            try {
+                // Initialize Cal.com widget
+                Cal('inline', {
+                    elementOrSelector: '#cal-widget',
+                    calLink: `innercompassparenting/${eventSlug}`,
+                    config: {
+                        layout: 'month_view',
+                        theme: 'light'
+                    }
+                });
+                
+                console.log(`✅ Cal.com widget initialized for ${eventSlug}`);
+                
+            } catch (error) {
+                console.error(`❌ Error loading Cal.com widget:`, error);
+                widget.innerHTML = `<div style="color: red; padding: 20px;">Error loading Cal.com widget. Check console for details.</div>`;
+            }
+        }
+        
+        // Test with a simple iframe approach as backup
+        function loadCalEventIframe(eventSlug) {
+            const widget = document.getElementById('cal-widget');
+            const testInfo = document.getElementById('current-test');
+            
+            console.log(`🧪 Testing Cal.com iframe: ${eventSlug}`);
+            testInfo.textContent = `Testing iframe: ${eventSlug}`;
+            
+            const iframeUrl = `https://cal.com/innercompassparenting/${eventSlug}?embed=true`;
+            
+            widget.innerHTML = `
+                <iframe 
+                    src="${iframeUrl}" 
+                    width="100%" 
+                    height="100%" 
+                    frameborder="0"
+                    style="border-radius: 8px;">
+                </iframe>
+            `;
+            
+            console.log(`✅ Cal.com iframe loaded: ${iframeUrl}`);
+        }
+        
+        // Add iframe test buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.container');
+            const iframeSection = document.createElement('div');
+            iframeSection.innerHTML = `
+                <h2 style="color: #6597b8; margin: 40px 0 20px 0;">🎯 Backup: Iframe Method</h2>
+                <div class="button-grid">
+                    <button class="cal-button" onclick="loadCalEventIframe('30-min-zoom-call')" style="background: #749494;">
+                        📹 30min (Iframe)
+                    </button>
+                    
+                    <button class="cal-button" onclick="loadCalEventIframe('60-min-zoom-call')" style="background: #749494;">
+                        📹 60min (Iframe)
+                    </button>
+                    
+                    <button class="cal-button" onclick="loadCalEventIframe('60-min-home-visit')" style="background: #749494;">
+                        🏠 60min (Iframe)
+                    </button>
+                    
+                    <button class="cal-button" onclick="loadCalEventIframe('120-min-home-visit')" style="background: #749494;">
+                        🏠 120min (Iframe)
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(iframeSection);
+        });
+        
+        // Console debugging info
+        console.log('🧪 Cal.com Test Page Loaded');
+        console.log('📋 Available functions: loadCalEvent(), loadCalEventIframe()');
+        console.log('🎯 Your Cal.com username: innercompassparenting');
+    </script>
+</body>
+</html>
